@@ -1,0 +1,44 @@
+name: Build Android APK
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Install Cordova
+        run: npm install -g cordova
+
+      - name: Create Cordova Project & Build APK
+        run: |
+          cordova create build_app com.restaurant.app "RestaurantApp"
+          rm -rf build_app/www/*
+          cp index.html build_app/www/
+          cd build_app
+          cordova platform add android
+          cordova build android --verbose
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Restaurant-App-APK
+          path: build_app/platforms/android/app/build/outputs/apk/debug/app-debug.apk
