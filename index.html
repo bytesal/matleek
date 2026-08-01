@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام إدارة الزبائن والاستبيانات - iOS Style</title>
+    <title>Matleek Survey - Restaurant Management</title>
     <!-- Tailwind CSS v4 -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <!-- XLSX Library -->
@@ -32,7 +32,7 @@
             filter: brightness(0.9) contrast(1.05);
         }
 
-        /* طبقة حماية زجاجية ناصعة البياض بنمط iOS */
+        /* طبقة حماية زجاجية بنمط iOS */
         .video-overlay {
             position: fixed;
             top: 0;
@@ -47,7 +47,7 @@
 
         /* كروت زجاجية بنمط iOS */
         .ios-card {
-            background: rgba(255, 255, 255, 0.82);
+            background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.9);
@@ -57,7 +57,7 @@
 
         /* أدوات الإدخال iOS Inputs */
         .ios-input {
-            background: rgba(241, 245, 249, 0.75);
+            background: rgba(241, 245, 249, 0.8);
             border: 1px solid rgba(226, 232, 240, 0.8);
             border-radius: 16px;
             transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
@@ -79,46 +79,68 @@
         .ios-btn-primary:hover {
             background: #0062cc;
             transform: translateY(-1px);
-            box-shadow: 0 12px 24px rgba(0, 122, 255, 0.35);
         }
         .ios-btn-primary:active {
             transform: scale(0.98);
         }
 
+        /* أزرار لوحة الأرقام Custom Numpad */
+        .num-key {
+            background: #ffffff;
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            border-radius: 16px;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: #1e293b;
+            transition: all 0.15s ease;
+        }
+        .num-key:active {
+            background: #007aff;
+            color: #ffffff;
+            transform: scale(0.95);
+        }
+
+        /* تحسينات الطباعة المخصصة للأجهزة والتابلت */
         @media print {
-            .no-print { display: none !important; }
-            .video-bg, .video-overlay { display: none !important; }
+            .no-print, nav, .video-bg, .video-overlay, #dashboard-lock, .numpad-container { display: none !important; }
             body { background: white !important; color: black !important; }
-            .ios-card { background: white !important; box-shadow: none !important; border: 1px solid #ccc !important; }
+            .ios-card { background: white !important; box-shadow: none !important; border: 1px solid #ddd !important; border-radius: 0 !important; }
+            #dashboard-content { display: block !important; }
+            table { width: 100% !important; border-collapse: collapse !important; }
+            th, td { border: 1px solid #ddd !important; padding: 8px !important; }
         }
     </style>
 </head>
 <body class="text-slate-900 min-h-screen antialiased selection:bg-blue-500 selection:text-white">
 
-    <!-- فيديو الخلفية للمطاعم والأكل -->
+    <!-- فيديو الخلفية -->
     <video autoplay muted loop playsinline class="video-bg">
         <source src="https://assets.mixkit.co/videos/preview/mixkit-top-view-of-a-table-with-food-40762-large.mp4" type="video/mp4">
     </video>
     <div class="video-overlay"></div>
 
-    <!-- شريط التنقل العلوي - iOS Glass Bar -->
+    <!-- شريط التنقل العلوي -->
     <nav class="no-print sticky top-0 z-50 p-4 border-b border-white/60 bg-white/60 backdrop-blur-2xl">
         <div class="max-w-6xl mx-auto flex flex-wrap justify-between items-center gap-4">
-            <div class="flex items-center gap-3">
+            
+            <!-- أزرار التبديل باليمين -->
+            <div class="flex flex-wrap p-1.5 bg-slate-200/50 backdrop-blur-md rounded-2xl border border-white/40 text-xs font-semibold">
+                <button onclick="switchTab('tab-live')" id="btn-tab-live" class="nav-btn px-5 py-2 rounded-xl transition-all duration-300 bg-white text-blue-600 shadow-sm font-bold">إدخال طاولات</button>
+                <button onclick="switchTab('tab-dashboard')" id="btn-tab-dashboard" class="nav-btn px-5 py-2 rounded-xl transition-all duration-300 text-slate-600 hover:text-slate-900">الداشبورد والتقارير 🔐</button>
+            </div>
+
+            <!-- اسم المطعم والتطبيق باليسار -->
+            <div class="flex items-center gap-3 text-left" dir="ltr">
                 <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-blue-500 to-indigo-500 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-blue-500/20">
                     🍽️
                 </div>
                 <div>
-                    <h1 class="text-lg font-extrabold text-slate-900 tracking-tight">نظام إدارة المطعم</h1>
-                    <p class="text-[11px] font-medium text-slate-500">إصدار iOS المخصص</p>
+                    <h1 class="text-lg font-extrabold text-slate-900 tracking-tight leading-none">Matleek Restaurant</h1>
+                    <p class="text-[11px] font-bold text-blue-600 mt-0.5">Matleek Survey</p>
                 </div>
             </div>
-            
-            <div class="flex flex-wrap p-1.5 bg-slate-200/50 backdrop-blur-md rounded-2xl border border-white/40 text-xs font-semibold">
-                <button onclick="switchTab('tab-live')" id="btn-tab-live" class="nav-btn px-5 py-2 rounded-xl transition-all duration-300 bg-white text-blue-600 shadow-sm font-bold">إدخال طاولات</button>
-                <button onclick="switchTab('tab-old')" id="btn-tab-old" class="nav-btn px-5 py-2 rounded-xl transition-all duration-300 text-slate-600 hover:text-slate-900">الأرشيف الورقي</button>
-                <button onclick="switchTab('tab-dashboard')" id="btn-tab-dashboard" class="nav-btn px-5 py-2 rounded-xl transition-all duration-300 text-slate-600 hover:text-slate-900">الداشبورد والتقارير 🔐</button>
-            </div>
+
         </div>
     </nav>
 
@@ -127,7 +149,7 @@
         <!-- 1. واجهة إدخال الطاولات المباشرة -->
         <section id="tab-live" class="tab-content space-y-6">
             <div class="max-w-lg mx-auto ios-card p-6 md:p-8">
-                <div class="border-b border-slate-100 pb-4 mb-6">
+                <div class="border-b border-slate-100 pb-4 mb-6 text-center">
                     <h2 class="text-xl font-extrabold text-slate-900">تسجيل طاولة جديدة</h2>
                     <p class="text-xs text-slate-500 mt-1">إدخال سريع وسلس لموظفي الريسبشن والخدمة</p>
                 </div>
@@ -136,69 +158,50 @@
                         <label class="block text-xs font-bold text-slate-700 mb-1.5">اسم الزبون <span class="text-blue-500">*</span></label>
                         <input type="text" id="live-name" required placeholder="أدخل الاسم الثلاثي" class="w-full ios-input p-3.5 outline-none text-sm text-slate-800 placeholder-slate-400">
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1.5">رقم الهاتف <span class="text-blue-500">*</span></label>
-                            <input type="text" id="live-phone" required placeholder="05xxxxxxxx" oninput="this.value=this.value.replace(/[^0-9]/g,'')" class="w-full ios-input p-3.5 outline-none text-sm text-slate-800 placeholder-slate-400 text-left" dir="ltr">
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">رقم الهاتف <span class="text-blue-500">*</span></label>
+                        <input type="text" id="live-phone" readonly required placeholder="اضغط لإدخال الرقم" onclick="openNumpad()" class="w-full ios-input p-3.5 outline-none text-sm text-slate-800 text-center font-bold tracking-widest cursor-pointer bg-blue-50/50 border-blue-200">
+                    </div>
+
+                    <!-- لوحة الأرقام المخصصة Custom Numpad -->
+                    <div id="numpad-container" class="hidden ios-card p-4 border border-blue-100 bg-slate-50/90 shadow-inner rounded-2xl space-y-3">
+                        <div class="flex justify-between items-center px-1">
+                            <span class="text-[11px] font-bold text-slate-500">لوحة إدخال الرقم</span>
+                            <button type="button" onclick="closeNumpad()" class="text-xs font-bold text-blue-600 hover:underline">تم ✅</button>
                         </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1.5">رقم الطاولة <span class="text-blue-500">*</span></label>
-                            <input type="text" id="live-table" required placeholder="مثال: 14" class="w-full ios-input p-3.5 outline-none text-sm text-slate-800 placeholder-slate-400">
+                        <div class="grid grid-cols-3 gap-2" dir="ltr">
+                            <button type="button" onclick="pressNum('1')" class="num-key py-3">1</button>
+                            <button type="button" onclick="pressNum('2')" class="num-key py-3">2</button>
+                            <button type="button" onclick="pressNum('3')" class="num-key py-3">3</button>
+                            <button type="button" onclick="pressNum('4')" class="num-key py-3">4</button>
+                            <button type="button" onclick="pressNum('5')" class="num-key py-3">5</button>
+                            <button type="button" onclick="pressNum('6')" class="num-key py-3">6</button>
+                            <button type="button" onclick="pressNum('7')" class="num-key py-3">7</button>
+                            <button type="button" onclick="pressNum('8')" class="num-key py-3">8</button>
+                            <button type="button" onclick="pressNum('9')" class="num-key py-3">9</button>
+                            <button type="button" onclick="clearNum()" class="num-key py-3 text-rose-500 text-sm font-bold">مسح</button>
+                            <button type="button" onclick="pressNum('0')" class="num-key py-3">0</button>
+                            <button type="button" onclick="deleteNum()" class="num-key py-3 text-amber-600 text-sm font-bold">⌫</button>
                         </div>
                     </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">رقم الطاولة <span class="text-blue-500">*</span></label>
+                        <input type="text" id="live-table" required placeholder="مثال: 14" class="w-full ios-input p-3.5 outline-none text-sm text-slate-800 placeholder-slate-400">
+                    </div>
+
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1.5">ملاحظات خاصة</label>
-                        <textarea id="live-notes" rows="3" placeholder="ملاحظات الاستقبال والملاحظات الخاصة..." class="w-full ios-input p-3.5 outline-none text-sm text-slate-800 placeholder-slate-400"></textarea>
+                        <textarea id="live-notes" rows="2" placeholder="ملاحظات الاستقبال والملاحظات الخاصة..." class="w-full ios-input p-3.5 outline-none text-sm text-slate-800 placeholder-slate-400"></textarea>
                     </div>
+
                     <button type="submit" id="btn-live-submit" class="w-full ios-btn-primary font-bold py-4 text-sm mt-2">حفظ وإرسال إشعار 🚀</button>
                 </form>
             </div>
         </section>
 
-        <!-- 2. واجهة تفريغ الأرشيف الورقي القديم -->
-        <section id="tab-old" class="tab-content hidden space-y-6">
-            <div class="max-w-xl mx-auto ios-card p-6 md:p-8">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-100 pb-4 mb-6 gap-4">
-                    <div>
-                        <h2 class="text-xl font-extrabold text-slate-900">تفريغ الأرشيف الورقي</h2>
-                        <p class="text-xs text-slate-500 mt-1">تعديل وتفريغ بيانات الزبائن السابقة</p>
-                    </div>
-                    <label class="cursor-pointer bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-4 py-2.5 rounded-2xl transition flex items-center gap-2 border border-slate-200/60">
-                        <span>📂 رفع ملف Excel</span>
-                        <input type="file" accept=".xlsx, .xls, .csv" onchange="uploadExcel(event)" class="hidden">
-                    </label>
-                </div>
-                <form onsubmit="submitOldForm(event)" class="space-y-4">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1.5">اسم الزبون القديم <span class="text-blue-500">*</span></label>
-                            <input type="text" id="old-name" required placeholder="كما ورد بالورقة" class="w-full ios-input p-3.5 outline-none text-sm text-slate-800">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1.5">تاريخ الزيارة <span class="text-blue-500">*</span></label>
-                            <input type="date" id="old-date" required class="w-full ios-input p-3.5 outline-none text-sm text-slate-800">
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1.5">رقم الهاتف</label>
-                            <input type="text" id="old-phone" placeholder="05xxxxxxxx" class="w-full ios-input p-3.5 outline-none text-sm text-slate-800 text-left" dir="ltr">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1.5">رقم الطاولة</label>
-                            <input type="text" id="old-table" placeholder="اختياري" class="w-full ios-input p-3.5 outline-none text-sm text-slate-800">
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5">الملاحظات القديمة</label>
-                        <textarea id="old-notes" rows="2" placeholder="تفاصيل وتدوينات الورق..." class="w-full ios-input p-3.5 outline-none text-sm text-slate-800"></textarea>
-                    </div>
-                    <button type="submit" id="btn-old-submit" class="w-full bg-slate-900 hover:bg-black text-white rounded-2xl font-bold py-4 text-sm transition shadow-lg shadow-slate-900/10">تخزين بالأرشيف الورقي</button>
-                </form>
-            </div>
-        </section>
-
-        <!-- 3. الداشبورد والتقارير (محمي بكلمة السر 2024) -->
+        <!-- 2. الداشبورد والتقارير (محمي بكلمة السر 2024) -->
         <section id="tab-dashboard" class="tab-content hidden space-y-6">
             <div id="dashboard-lock" class="max-w-md mx-auto ios-card p-8 text-center space-y-4 no-print shadow-2xl">
                 <div class="w-16 h-16 bg-blue-50 border border-blue-100 rounded-3xl flex items-center justify-center text-3xl mx-auto text-blue-500 shadow-inner">
@@ -211,20 +214,37 @@
             </div>
 
             <div id="dashboard-content" class="hidden space-y-6">
+                <!-- الهيدر والتحكم -->
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 ios-card p-6 no-print">
                     <div>
                         <h2 class="text-xl font-extrabold text-slate-900">لوحة المراقبة والتحليلات</h2>
-                        <p class="text-xs text-slate-500 mt-1">تصفح شامل، فلترة واستخراج تقارير طباعة بصيغة PDF</p>
+                        <p class="text-xs text-slate-500 mt-1">تصفح شامل، فلترة واستخراج تقارير</p>
                     </div>
-                    <div class="flex gap-3 w-full md:w-auto">
+                    <div class="flex flex-wrap gap-2 w-full md:w-auto">
                         <button onclick="loadDashboardData()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-3 rounded-2xl text-xs transition border border-slate-200/60">🔄 تحديث</button>
-                        <button onclick="window.print()" class="ios-btn-primary font-bold px-5 py-3 rounded-2xl text-xs flex items-center gap-2">🖨️ طباعة PDF</button>
+                        <button onclick="exportToExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-3 rounded-2xl text-xs transition shadow-md flex items-center gap-1.5">📊 تصدير Excel</button>
+                        <button onclick="triggerPrint()" class="ios-btn-primary font-bold px-5 py-3 rounded-2xl text-xs flex items-center gap-2">🖨️ طباعة PDF</button>
                     </div>
                 </div>
 
+                <!-- شريط البحث والفلترة الاحترافي -->
+                <div class="ios-card p-4 no-print flex flex-col md:flex-row gap-4 items-center justify-between">
+                    <div class="w-full md:w-2/3 relative">
+                        <input type="text" id="search-input" oninput="applyFilter()" placeholder="🔍 بحث بالاسم، رقم الهاتف، أو رقم الطاولة..." class="w-full ios-input p-3 pr-4 text-xs outline-none">
+                    </div>
+                    <div class="w-full md:w-1/3 flex gap-2">
+                        <select id="filter-type" onchange="applyFilter()" class="w-full ios-input p-3 text-xs outline-none text-slate-700 font-bold">
+                            <option value="all">جميع المصادر</option>
+                            <option value="مباشر">مباشر (الطاولات)</option>
+                            <option value="قديم">قديم (الأرشيف)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- جدول السجلات -->
                 <div class="ios-card overflow-hidden p-6">
                     <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-md font-extrabold text-slate-900">سجلات البيانات كاملة</h3>
+                        <h3 class="text-md font-extrabold text-slate-900">سجلات البيانات</h3>
                         <span id="record-count" class="text-xs font-bold bg-blue-50 text-blue-600 px-3 py-1 rounded-full border border-blue-100">عدد السجلات: 0</span>
                     </div>
                     <div class="overflow-x-auto">
@@ -254,6 +274,7 @@
 
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzybaVrQUirtdNLIxjlQvdUjIfPniJOVijZ8KeNx_MFYWToIho14EjM4U5XPIUTrH6e/exec";
+        let rawDashboardData = []; // تخزين البيانات للفلترة السريعة
 
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
@@ -271,7 +292,26 @@
             }
         }
 
-        // فتح قفل الداشبورد بكلمة المرور 2024
+        // لوحة الأرقام المخصصة (Custom Numpad)
+        function openNumpad() {
+            document.getElementById('numpad-container').classList.remove('hidden');
+        }
+        function closeNumpad() {
+            document.getElementById('numpad-container').classList.add('hidden');
+        }
+        function pressNum(num) {
+            const input = document.getElementById('live-phone');
+            input.value += num;
+        }
+        function clearNum() {
+            document.getElementById('live-phone').value = '';
+        }
+        function deleteNum() {
+            const input = document.getElementById('live-phone');
+            input.value = input.value.slice(0, -1);
+        }
+
+        // قفل الداشبورد بكلمة المرور 2024
         function unlockDashboard() {
             const pass = document.getElementById('dashboard-passcode').value;
             if (pass === "2024") {
@@ -300,48 +340,17 @@
             fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) })
             .then(res => res.json())
             .then(res => {
-                alert("تم تسجيل بيانات الطاولة وإرسال الإشعار بنجاح!");
+                alert("تم تسجيل بيانات الطاولة بنجاح!");
                 document.getElementById('live-name').value = '';
                 document.getElementById('live-phone').value = '';
                 document.getElementById('live-table').value = '';
                 document.getElementById('live-notes').value = '';
+                closeNumpad();
             })
             .catch(() => alert("حدث خطأ أثناء حفظ البيانات"))
             .finally(() => {
                 btn.disabled = false;
                 btn.innerText = "حفظ وإرسال إشعار 🚀";
-            });
-        }
-
-        function submitOldForm(e) {
-            e.preventDefault();
-            const btn = document.getElementById('btn-old-submit');
-            btn.disabled = true;
-            btn.innerText = "جاري الحفظ...";
-
-            const payload = {
-                action: "addOldData",
-                name: document.getElementById('old-name').value,
-                phone: document.getElementById('old-phone').value,
-                tableNo: document.getElementById('old-table').value,
-                notes: document.getElementById('old-notes').value,
-                date: document.getElementById('old-date').value
-            };
-
-            fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) })
-            .then(res => res.json())
-            .then(res => {
-                alert("تم التخزين في الأرشيف بنجاح!");
-                document.getElementById('old-name').value = '';
-                document.getElementById('old-phone').value = '';
-                document.getElementById('old-table').value = '';
-                document.getElementById('old-notes').value = '';
-                document.getElementById('old-date').value = '';
-            })
-            .catch(() => alert("حدث خطأ أثناء عملية الأرشفة"))
-            .finally(() => {
-                btn.disabled = false;
-                btn.innerText = "تخزين بالأرشيف الورقي";
             });
         }
 
@@ -352,57 +361,71 @@
             fetch(`${SCRIPT_URL}?action=getDashboardData`)
             .then(res => res.json())
             .then(data => {
-                tbody.innerHTML = '';
-                document.getElementById('record-count').innerText = `عدد السجلات: ${data.length}`;
-                if(!data || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-slate-400 text-xs">لا توجد سجلات حالياً</td></tr>';
-                    return;
-                }
-                data.reverse().forEach(row => {
-                    tbody.innerHTML += `
-                        <tr class="hover:bg-slate-50/80 transition">
-                            <td class="py-3.5 font-bold text-slate-900">${row.name || '-'}</td>
-                            <td class="py-3.5 text-slate-500 font-mono text-xs" dir="ltr">${row.phone || '-'}</td>
-                            <td class="py-3.5 font-extrabold text-blue-600">${row.tableNo || '-'}</td>
-                            <td class="py-3.5 text-slate-600 text-xs">${row.notes || '-'}</td>
-                            <td class="py-3.5 text-slate-400 text-xs">${row.date || '-'}</td>
-                            <td class="py-3.5 text-xs"><span class="px-2.5 py-1 bg-slate-100 text-slate-600 rounded-lg text-[11px] font-bold">${row.type || 'عام'}</span></td>
-                        </tr>`;
-                });
+                rawDashboardData = data.reverse();
+                renderTableData(rawDashboardData);
             })
             .catch(() => {
                 tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-rose-500 text-xs">فشل جلب البيانات</td></tr>';
             });
         }
 
-        function uploadExcel(e) {
-            const file = e.target.files[0];
-            if (!file) return;
+        // عرض البيانات وترشيحها
+        function renderTableData(data) {
+            const tbody = document.getElementById('dashboard-table-body');
+            tbody.innerHTML = '';
+            document.getElementById('record-count').innerText = `عدد السجلات: ${data.length}`;
+            
+            if(!data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-slate-400 text-xs">لا توجد نتائج مطابقة للبحث</td></tr>';
+                return;
+            }
 
-            const reader = new FileReader();
-            reader.onload = function(evt) {
-                const workbook = XLSX.read(new Uint8Array(evt.target.result), {type: 'array'});
-                const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
-                
-                const items = jsonData.map(row => ({
-                    name: row['الاسم'] || row['اسم الزبون'] || row['name'] || '',
-                    phone: row['الهاتف'] || row['رقم الهاتف'] || row['phone'] || '',
-                    tableNo: row['الطاولة'] || row['رقم الطاولة'] || 'قديم',
-                    notes: row['الملاحظات'] || 'مستورد من ملف إكسل',
-                    date: row['التاريخ'] || 'بيانات قديمة'
-                }));
+            data.forEach(row => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50/80 transition">
+                        <td class="py-3.5 font-bold text-slate-900">${row.name || '-'}</td>
+                        <td class="py-3.5 text-slate-500 font-mono text-xs" dir="ltr">${row.phone || '-'}</td>
+                        <td class="py-3.5 font-extrabold text-blue-600">${row.tableNo || '-'}</td>
+                        <td class="py-3.5 text-slate-600 text-xs">${row.notes || '-'}</td>
+                        <td class="py-3.5 text-slate-400 text-xs">${row.date || '-'}</td>
+                        <td class="py-3.5 text-xs"><span class="px-2.5 py-1 bg-slate-100 text-slate-600 rounded-lg text-[11px] font-bold">${row.type || 'عام'}</span></td>
+                    </tr>`;
+            });
+        }
 
-                if (confirm(`هل ترغب برفع ${items.length} سجل إلى قاعدة البيانات؟`)) {
-                    fetch(SCRIPT_URL, {
-                        method: "POST",
-                        body: JSON.stringify({ action: "addOldData", items: items })
-                    })
-                    .then(res => res.json())
-                    .then(() => alert(`تم الاستيراد بنجاح!`))
-                    .catch(() => alert("حدث خطأ أثناء الرفع"));
-                }
-            };
-            reader.readAsArrayBuffer(file);
+        // محرك البحث والفلترة الاحترافي
+        function applyFilter() {
+            const query = document.getElementById('search-input').value.toLowerCase().trim();
+            const typeFilter = document.getElementById('filter-type').value;
+
+            const filtered = rawDashboardData.filter(item => {
+                const matchQuery = (item.name && item.name.toLowerCase().includes(query)) ||
+                                   (item.phone && item.phone.includes(query)) ||
+                                   (item.tableNo && item.tableNo.toString().includes(query));
+
+                const matchType = (typeFilter === 'all') || (item.type && item.type.includes(typeFilter));
+
+                return matchQuery && matchType;
+            });
+
+            renderTableData(filtered);
+        }
+
+        // حل مشكلة الطباعة على التابلت
+        function triggerPrint() {
+            window.print();
+        }
+
+        // خيار إضافي مخصص للتابلت للتصدير المباشر
+        function exportToExcel() {
+            if(!rawDashboardData || rawDashboardData.length === 0) {
+                alert("لا توجد بيانات للتصدير!");
+                return;
+            }
+            const worksheet = XLSX.utils.json_to_sheet(rawDashboardData);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Reports");
+            XLSX.writeFile(workbook, "Matleek_Survey_Report.xlsx");
         }
     </script>
 </body>
