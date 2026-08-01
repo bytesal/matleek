@@ -151,7 +151,6 @@
             <div class="max-w-lg mx-auto ios-card p-6 md:p-8">
                 <div class="border-b border-slate-100 pb-4 mb-6 text-center">
                     <h2 class="text-xl font-extrabold text-slate-900">تسجيل طاولة جديدة</h2>
-                    <p class="text-xs text-slate-500 mt-1">إدخال سريع وسلس لموظفي الريسبشن والخدمة</p>
                 </div>
                 <form onsubmit="submitLiveForm(event)" class="space-y-4">
                     <div>
@@ -274,7 +273,7 @@
 
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzybaVrQUirtdNLIxjlQvdUjIfPniJOVijZ8KeNx_MFYWToIho14EjM4U5XPIUTrH6e/exec";
-        let rawDashboardData = []; // تخزين البيانات للفلترة السريعة
+        let rawDashboardData = [];
 
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
@@ -292,7 +291,6 @@
             }
         }
 
-        // لوحة الأرقام المخصصة (Custom Numpad)
         function openNumpad() {
             document.getElementById('numpad-container').classList.remove('hidden');
         }
@@ -311,7 +309,6 @@
             input.value = input.value.slice(0, -1);
         }
 
-        // قفل الداشبورد بكلمة المرور 2024
         function unlockDashboard() {
             const pass = document.getElementById('dashboard-passcode').value;
             if (pass === "2024") {
@@ -369,7 +366,6 @@
             });
         }
 
-        // عرض البيانات وترشيحها
         function renderTableData(data) {
             const tbody = document.getElementById('dashboard-table-body');
             tbody.innerHTML = '';
@@ -393,7 +389,6 @@
             });
         }
 
-        // محرك البحث والفلترة الاحترافي
         function applyFilter() {
             const query = document.getElementById('search-input').value.toLowerCase().trim();
             const typeFilter = document.getElementById('filter-type').value;
@@ -411,12 +406,10 @@
             renderTableData(filtered);
         }
 
-        // حل مشكلة الطباعة على التابلت
         function triggerPrint() {
             window.print();
         }
 
-        // خيار إضافي مخصص للتابلت للتصدير المباشر
         function exportToExcel() {
             if(!rawDashboardData || rawDashboardData.length === 0) {
                 alert("لا توجد بيانات للتصدير!");
