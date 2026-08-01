@@ -47,18 +47,18 @@
 
         /* كروت زجاجية بنمط iOS */
         .ios-card {
-            background: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.88);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.9);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
-            border-radius: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.95);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03), 0 1px 4px rgba(0, 0, 0, 0.02);
+            border-radius: 24px;
         }
 
         /* أدوات الإدخال iOS Inputs */
         .ios-input {
-            background: rgba(241, 245, 249, 0.8);
-            border: 1px solid rgba(226, 232, 240, 0.8);
+            background: rgba(241, 245, 249, 0.85);
+            border: 1px solid rgba(226, 232, 240, 0.9);
             border-radius: 16px;
             transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -72,8 +72,8 @@
         .ios-btn-primary {
             background: #007aff;
             color: #ffffff;
-            border-radius: 18px;
-            box-shadow: 0 8px 20px rgba(0, 122, 255, 0.25);
+            border-radius: 16px;
+            box-shadow: 0 6px 16px rgba(0, 122, 255, 0.2);
             transition: all 0.2s ease;
         }
         .ios-btn-primary:hover {
@@ -108,7 +108,7 @@
             .ios-card { background: white !important; box-shadow: none !important; border: 1px solid #ddd !important; border-radius: 0 !important; }
             #dashboard-content { display: block !important; }
             table { width: 100% !important; border-collapse: collapse !important; }
-            th, td { border: 1px solid #ddd !important; padding: 8px !important; }
+            th, td { border: 1px solid #ddd !important; padding: 10px !important; }
         }
     </style>
 </head>
@@ -144,7 +144,7 @@
         </div>
     </nav>
 
-    <div class="max-w-5xl mx-auto p-4 md:p-8">
+    <div class="max-w-6xl mx-auto p-4 md:p-8">
 
         <!-- 1. واجهة إدخال الطاولات المباشرة -->
         <section id="tab-live" class="tab-content space-y-6">
@@ -202,6 +202,8 @@
 
         <!-- 2. الداشبورد والتقارير (محمي بكلمة السر 2024) -->
         <section id="tab-dashboard" class="tab-content hidden space-y-6">
+            
+            <!-- حماية كلمة السر -->
             <div id="dashboard-lock" class="max-w-md mx-auto ios-card p-8 text-center space-y-4 no-print shadow-2xl">
                 <div class="w-16 h-16 bg-blue-50 border border-blue-100 rounded-3xl flex items-center justify-center text-3xl mx-auto text-blue-500 shadow-inner">
                     🔐
@@ -212,60 +214,96 @@
                 <button onclick="unlockDashboard()" id="btn-auth" class="w-full ios-btn-primary font-bold py-3.5 text-sm">تأكيد ودخول</button>
             </div>
 
+            <!-- محتوى الداشبورد الاحترافي -->
             <div id="dashboard-content" class="hidden space-y-6">
-                <!-- الهيدر والتحكم -->
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 ios-card p-6 no-print">
+                
+                <!-- الهيدر الرئيسي والأزرار -->
+                <div class="ios-card p-6 no-print flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div>
-                        <h2 class="text-xl font-extrabold text-slate-900">لوحة المراقبة والتحليلات</h2>
-                        <p class="text-xs text-slate-500 mt-1">تصفح شامل، فلترة واستخراج تقارير</p>
+                        <h2 class="text-2xl font-black text-slate-900 tracking-tight">لوحة التحكم والتحليلات</h2>
+                        <p class="text-xs font-semibold text-slate-500 mt-1">متابعة الزبائن والتفاعلات لحظياً</p>
                     </div>
-                    <div class="flex flex-wrap gap-2 w-full md:w-auto">
-                        <button onclick="loadDashboardData()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-3 rounded-2xl text-xs transition border border-slate-200/60">🔄 تحديث</button>
-                        <button onclick="exportToExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-3 rounded-2xl text-xs transition shadow-md flex items-center gap-1.5">📊 تصدير Excel</button>
-                        <button onclick="triggerPrint()" class="ios-btn-primary font-bold px-5 py-3 rounded-2xl text-xs flex items-center gap-2">🖨️ طباعة PDF</button>
+                    <div class="flex flex-wrap gap-2.5 w-full md:w-auto">
+                        <button onclick="loadDashboardData()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2.5 rounded-xl text-xs transition border border-slate-200/80 flex items-center gap-1.5">
+                            <span>🔄</span> تحديث
+                        </button>
+                        <button onclick="exportToExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition shadow-md flex items-center gap-1.5">
+                            <span>📊</span> تصدير Excel
+                        </button>
+                        <button onclick="triggerPrint()" class="ios-btn-primary font-bold px-5 py-2.5 rounded-xl text-xs flex items-center gap-1.5">
+                            <span>🖨️</span> طباعة PDF
+                        </button>
                     </div>
                 </div>
 
-                <!-- شريط البحث والفلترة الاحترافي -->
-                <div class="ios-card p-4 no-print flex flex-col md:flex-row gap-4 items-center justify-between">
-                    <div class="w-full md:w-2/3 relative">
-                        <input type="text" id="search-input" oninput="applyFilter()" placeholder="🔍 بحث بالاسم، رقم الهاتف، أو رقم الطاولة..." class="w-full ios-input p-3 pr-4 text-xs outline-none">
+                <!-- كروت الإحصائيات السريعة (Stats Cards) -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 no-print">
+                    <div class="ios-card p-5 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-bold text-slate-400">إجمالي السجلات</p>
+                            <h3 id="stat-total" class="text-2xl font-black text-slate-900 mt-1">0</h3>
+                        </div>
+                        <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl font-bold">
+                            📋
+                        </div>
                     </div>
-                    <div class="w-full md:w-1/3 flex gap-2">
-                        <select id="filter-type" onchange="applyFilter()" class="w-full ios-input p-3 text-xs outline-none text-slate-700 font-bold">
-                            <option value="all">جميع المصادر</option>
+                    <div class="ios-card p-5 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-bold text-slate-400">تسجيلات الطاولات</p>
+                            <h3 id="stat-live" class="text-2xl font-black text-blue-600 mt-1">0</h3>
+                        </div>
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl font-bold">
+                            🍽️
+                        </div>
+                    </div>
+                    <div class="ios-card p-5 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-bold text-slate-400">سجلات الأرشيف</p>
+                            <h3 id="stat-old" class="text-2xl font-black text-indigo-600 mt-1">0</h3>
+                        </div>
+                        <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl font-bold">
+                            📂
+                        </div>
+                    </div>
+                </div>
+
+                <!-- شريط البحث والفلترة -->
+                <div class="ios-card p-4 no-print flex flex-col md:flex-row gap-3 items-center">
+                    <div class="w-full md:flex-1 relative">
+                        <input type="text" id="search-input" oninput="applyFilter()" placeholder="🔍 بحث باسم الزبون، رقم الهاتف، أو رقم الطاولة..." class="w-full ios-input p-3 pr-4 text-xs outline-none">
+                    </div>
+                    <div class="w-full md:w-48">
+                        <select id="filter-type" onchange="applyFilter()" class="w-full ios-input p-3 text-xs outline-none text-slate-700 font-bold cursor-pointer">
+                            <option value="all">كل المصادر</option>
                             <option value="مباشر">مباشر (الطاولات)</option>
                             <option value="قديم">قديم (الأرشيف)</option>
                         </select>
                     </div>
                 </div>
 
-                <!-- جدول السجلات -->
+                <!-- جدول السجلات بتنسيق احترافي -->
                 <div class="ios-card overflow-hidden p-6">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-md font-extrabold text-slate-900">سجلات البيانات</h3>
-                        <span id="record-count" class="text-xs font-bold bg-blue-50 text-blue-600 px-3 py-1 rounded-full border border-blue-100">عدد السجلات: 0</span>
-                    </div>
                     <div class="overflow-x-auto">
-                        <table class="w-full text-right text-sm">
+                        <table class="w-full text-right text-sm border-collapse">
                             <thead>
-                                <tr class="border-b border-slate-200/60 text-slate-400 text-xs">
-                                    <th class="pb-3 font-semibold">اسم الزبون</th>
-                                    <th class="pb-3 font-semibold">الهاتف</th>
-                                    <th class="pb-3 font-semibold">الطاولة</th>
-                                    <th class="pb-3 font-semibold">الملاحظات</th>
-                                    <th class="pb-3 font-semibold">التاريخ والوقت</th>
-                                    <th class="pb-3 font-semibold">المصدر</th>
+                                <tr class="border-b border-slate-200/80 text-slate-400 text-xs font-bold uppercase tracking-wider">
+                                    <th class="pb-4 pr-3">الزبون</th>
+                                    <th class="pb-4">رقم الهاتف</th>
+                                    <th class="pb-4 text-center">الطاولة</th>
+                                    <th class="pb-4">الملاحظات</th>
+                                    <th class="pb-4">التاريخ والوقت</th>
+                                    <th class="pb-4 text-center">المصدر</th>
                                 </tr>
                             </thead>
-                            <tbody id="dashboard-table-body" class="divide-y divide-slate-100 text-slate-700">
+                            <tbody id="dashboard-table-body" class="divide-y divide-slate-100/80 text-slate-700 font-medium">
                                 <tr>
-                                    <td colspan="6" class="py-8 text-center text-slate-400 text-xs">جاري تحميل البيانات من الخادم...</td>
+                                    <td colspan="6" class="py-12 text-center text-slate-400 text-xs">جاري تحميل البيانات من الخادم...</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
+
             </div>
         </section>
 
@@ -353,38 +391,59 @@
 
         function loadDashboardData() {
             const tbody = document.getElementById('dashboard-table-body');
-            tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-slate-400 text-xs">جاري التحميل...</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" class="py-12 text-center text-slate-400 text-xs">جاري تحميل البيانات من الخادم...</td></tr>';
 
             fetch(`${SCRIPT_URL}?action=getDashboardData`)
             .then(res => res.json())
             .then(data => {
                 rawDashboardData = data.reverse();
+                updateStats(rawDashboardData);
                 renderTableData(rawDashboardData);
             })
             .catch(() => {
-                tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-rose-500 text-xs">فشل جلب البيانات</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" class="py-12 text-center text-rose-500 text-xs font-bold">فشل جلب البيانات من الخادم</td></tr>';
             });
+        }
+
+        function updateStats(data) {
+            document.getElementById('stat-total').innerText = data.length;
+            const liveCount = data.filter(i => (i.type || '').includes('مباشر')).length;
+            const oldCount = data.length - liveCount;
+            document.getElementById('stat-live').innerText = liveCount;
+            document.getElementById('stat-old').innerText = oldCount;
         }
 
         function renderTableData(data) {
             const tbody = document.getElementById('dashboard-table-body');
             tbody.innerHTML = '';
-            document.getElementById('record-count').innerText = `عدد السجلات: ${data.length}`;
             
             if(!data || data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-slate-400 text-xs">لا توجد نتائج مطابقة للبحث</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" class="py-12 text-center text-slate-400 text-xs font-bold">لا توجد نتائج مطابقة للبحث</td></tr>';
                 return;
             }
 
             data.forEach(row => {
+                const isLive = (row.type || '').includes('مباشر');
+                const badgeStyle = isLive 
+                    ? 'bg-blue-50 text-blue-600 border-blue-100' 
+                    : 'bg-indigo-50 text-indigo-600 border-indigo-100';
+
                 tbody.innerHTML += `
-                    <tr class="hover:bg-slate-50/80 transition">
-                        <td class="py-3.5 font-bold text-slate-900">${row.name || '-'}</td>
-                        <td class="py-3.5 text-slate-500 font-mono text-xs" dir="ltr">${row.phone || '-'}</td>
-                        <td class="py-3.5 font-extrabold text-blue-600">${row.tableNo || '-'}</td>
-                        <td class="py-3.5 text-slate-600 text-xs">${row.notes || '-'}</td>
-                        <td class="py-3.5 text-slate-400 text-xs">${row.date || '-'}</td>
-                        <td class="py-3.5 text-xs"><span class="px-2.5 py-1 bg-slate-100 text-slate-600 rounded-lg text-[11px] font-bold">${row.type || 'عام'}</span></td>
+                    <tr class="hover:bg-slate-50/70 transition-colors duration-150">
+                        <td class="py-4 pr-3 font-bold text-slate-900">${row.name || '-'}</td>
+                        <td class="py-4 text-slate-500 font-mono text-xs" dir="ltr">${row.phone || '-'}</td>
+                        <td class="py-4 text-center">
+                            <span class="inline-block px-3 py-1 bg-slate-100 text-slate-800 rounded-xl font-extrabold text-xs">
+                                ${row.tableNo || '-'}
+                            </span>
+                        </td>
+                        <td class="py-4 text-slate-600 text-xs max-w-xs truncate">${row.notes || '-'}</td>
+                        <td class="py-4 text-slate-400 text-xs">${row.date || '-'}</td>
+                        <td class="py-4 text-center">
+                            <span class="px-3 py-1 rounded-full text-[11px] font-bold border ${badgeStyle}">
+                                ${row.type || 'عام'}
+                            </span>
+                        </td>
                     </tr>`;
             });
         }
