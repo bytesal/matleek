@@ -15,9 +15,9 @@
         body { 
             font-family: 'Cairo', -apple-system, BlinkMacSystemFont, sans-serif; 
             overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        /* فيديو الخلفية التفاعلي للمطاعم */
         .video-bg {
             position: fixed;
             top: 50%;
@@ -32,7 +32,6 @@
             filter: brightness(0.9) contrast(1.05);
         }
 
-        /* طبقة حماية زجاجية بنمط iOS */
         .video-overlay {
             position: fixed;
             top: 0;
@@ -45,7 +44,6 @@
             z-index: -1;
         }
 
-        /* كروت زجاجية بنمط iOS */
         .ios-card {
             background: rgba(255, 255, 255, 0.88);
             backdrop-filter: blur(20px);
@@ -55,7 +53,6 @@
             border-radius: 24px;
         }
 
-        /* أدوات الإدخال iOS Inputs */
         .ios-input {
             background: rgba(241, 245, 249, 0.85);
             border: 1px solid rgba(226, 232, 240, 0.9);
@@ -68,7 +65,6 @@
             box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.15);
         }
 
-        /* أزرار iOS التفاعلية */
         .ios-btn-primary {
             background: #007aff;
             color: #ffffff;
@@ -84,7 +80,6 @@
             transform: scale(0.98);
         }
 
-        /* أزرار لوحة الأرقام Custom Numpad */
         .num-key {
             background: #ffffff;
             border: 1px solid rgba(226, 232, 240, 0.9);
@@ -101,7 +96,6 @@
             transform: scale(0.95);
         }
 
-        /* تحسينات الطباعة المخصصة للأجهزة والتابلت */
         @media print {
             .no-print, nav, .video-bg, .video-overlay, #dashboard-lock, .numpad-container { display: none !important; }
             body { background: white !important; color: black !important; }
@@ -114,6 +108,14 @@
 </head>
 <body class="text-slate-900 min-h-screen antialiased selection:bg-blue-500 selection:text-white">
 
+    <!-- شريط إشعار التحديث الجديد -->
+    <div id="update-banner" class="hidden fixed top-0 left-0 right-0 z-[100] bg-blue-600 text-white px-4 py-3 shadow-lg flex justify-between items-center text-xs font-bold">
+        <span>🎉 يتوفر تحديث جديد للتطبيق!</span>
+        <button onclick="window.location.reload(true)" class="bg-white text-blue-600 px-3 py-1.5 rounded-lg shadow font-extrabold hover:bg-slate-100 transition">
+            تحديث الآن 🔄
+        </button>
+    </div>
+
     <!-- فيديو الخلفية -->
     <video autoplay muted loop playsinline class="video-bg">
         <source src="https://assets.mixkit.co/videos/preview/mixkit-top-view-of-a-table-with-food-40762-large.mp4" type="video/mp4">
@@ -124,13 +126,11 @@
     <nav class="no-print sticky top-0 z-50 p-4 border-b border-white/60 bg-white/60 backdrop-blur-2xl">
         <div class="max-w-6xl mx-auto flex flex-wrap justify-between items-center gap-4">
             
-            <!-- أزرار التبديل باليمين -->
             <div class="flex flex-wrap p-1.5 bg-slate-200/50 backdrop-blur-md rounded-2xl border border-white/40 text-xs font-semibold">
                 <button onclick="switchTab('tab-live')" id="btn-tab-live" class="nav-btn px-5 py-2 rounded-xl transition-all duration-300 bg-white text-blue-600 shadow-sm font-bold">إدخال طاولات</button>
                 <button onclick="switchTab('tab-dashboard')" id="btn-tab-dashboard" class="nav-btn px-5 py-2 rounded-xl transition-all duration-300 text-slate-600 hover:text-slate-900">الداشبورد والتقارير 🔐</button>
             </div>
 
-            <!-- اسم المطعم والتطبيق باليسار -->
             <div class="flex items-center gap-3 text-left" dir="ltr">
                 <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-blue-500 to-indigo-500 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-blue-500/20">
                     🍽️
@@ -163,7 +163,6 @@
                         <input type="text" id="live-phone" readonly required placeholder="اضغط لإدخال الرقم" onclick="openNumpad()" class="w-full ios-input p-3.5 outline-none text-sm text-slate-800 text-center font-bold tracking-widest cursor-pointer bg-blue-50/50 border-blue-200">
                     </div>
 
-                    <!-- لوحة الأرقام المخصصة Custom Numpad -->
                     <div id="numpad-container" class="hidden ios-card p-4 border border-blue-100 bg-slate-50/90 shadow-inner rounded-2xl space-y-3">
                         <div class="flex justify-between items-center px-1">
                             <span class="text-[11px] font-bold text-slate-500">لوحة إدخال الرقم</span>
@@ -200,24 +199,23 @@
             </div>
         </section>
 
-        <!-- 2. الداشبورد والتقارير (محمي بكلمة السر 2024) -->
+        <!-- 2. الداشبورد والتقارير -->
         <section id="tab-dashboard" class="tab-content hidden space-y-6">
             
-            <!-- حماية كلمة السر -->
+            <!-- حماية كلمة السر (تم إلغاء خيار الإيميل بناءً على طلبك) -->
             <div id="dashboard-lock" class="max-w-md mx-auto ios-card p-8 text-center space-y-4 no-print shadow-2xl">
                 <div class="w-16 h-16 bg-blue-50 border border-blue-100 rounded-3xl flex items-center justify-center text-3xl mx-auto text-blue-500 shadow-inner">
                     🔐
                 </div>
-                <h3 class="text-xl font-extrabold text-slate-900">الداشبورد المحمي</h3>
-                <p class="text-xs text-slate-500 leading-relaxed">أدخل كلمة المرور المعتمدة للوصول لسجلات البيانات والتقارير</p>
-                <input type="password" id="dashboard-passcode" placeholder="أدخل كلمة المرور" class="w-full ios-input p-3.5 text-center text-sm outline-none">
+                <h3 class="text-xl font-extrabold text-slate-900">لوحة التحكم المحمية</h3>
+                <p class="text-xs text-slate-500 leading-relaxed">أدخل كلمة المرور للوصول إلى بيانات واستبيانات الزبائن</p>
+                <input type="password" id="dashboard-passcode" placeholder="كلمة المرور (2024)" class="w-full ios-input p-3.5 text-center text-sm outline-none font-bold tracking-widest">
                 <button onclick="unlockDashboard()" id="btn-auth" class="w-full ios-btn-primary font-bold py-3.5 text-sm">تأكيد ودخول</button>
             </div>
 
-            <!-- محتوى الداشبورد الاحترافي البسيط -->
+            <!-- محتوى الداشبورد -->
             <div id="dashboard-content" class="hidden space-y-6">
                 
-                <!-- الهيدر الرئيسي مع العدد الإجمالي الأنيق والأزرار -->
                 <div class="ios-card p-6 no-print flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div class="flex items-center gap-4">
                         <div class="w-14 h-14 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center text-2xl font-bold text-blue-600 shadow-inner">
@@ -232,6 +230,9 @@
                     </div>
                     
                     <div class="flex flex-wrap gap-2.5 w-full md:w-auto">
+                        <button onclick="lockDashboardNow()" class="bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold px-4 py-2.5 rounded-xl text-xs transition border border-rose-200/80 flex items-center gap-1.5">
+                            <span>🔒</span> قفل الآن
+                        </button>
                         <button onclick="loadDashboardData()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2.5 rounded-xl text-xs transition border border-slate-200/80 flex items-center gap-1.5">
                             <span>🔄</span> تحديث
                         </button>
@@ -244,22 +245,20 @@
                     </div>
                 </div>
 
-                <!-- شريط البحث والفلترة حسب التاريخ فقط -->
+                <!-- شريط البحث والفلترة حسب التاريخ للتابلت والموبايل -->
                 <div class="ios-card p-4 no-print flex flex-col md:flex-row gap-3 items-center">
-                    <!-- البحث النصي -->
                     <div class="w-full md:flex-1 relative">
                         <input type="text" id="search-input" oninput="filterData()" placeholder="🔍 بحث باسم الزبون، رقم الهاتف، أو الطاولة..." class="w-full ios-input p-3 pr-4 text-xs outline-none font-medium">
                     </div>
                     
-                    <!-- الفلترة بالتاريخ -->
                     <div class="w-full md:w-auto flex items-center gap-2">
-                        <div class="flex items-center gap-1.5 bg-slate-100/80 px-3 py-1.5 rounded-xl border border-slate-200/80">
+                        <div class="flex items-center gap-1.5 bg-slate-100/80 px-3 py-2 rounded-xl border border-slate-200/80">
                             <span class="text-[11px] font-bold text-slate-500">من:</span>
-                            <input type="date" id="date-from" onchange="filterData()" class="bg-transparent text-xs text-slate-700 font-bold outline-none cursor-pointer">
+                            <input type="date" id="date-from" onchange="filterData()" oninput="filterData()" class="bg-transparent text-xs text-slate-700 font-bold outline-none cursor-pointer">
                         </div>
-                        <div class="flex items-center gap-1.5 bg-slate-100/80 px-3 py-1.5 rounded-xl border border-slate-200/80">
+                        <div class="flex items-center gap-1.5 bg-slate-100/80 px-3 py-2 rounded-xl border border-slate-200/80">
                             <span class="text-[11px] font-bold text-slate-500">إلى:</span>
-                            <input type="date" id="date-to" onchange="filterData()" class="bg-transparent text-xs text-slate-700 font-bold outline-none cursor-pointer">
+                            <input type="date" id="date-to" onchange="filterData()" oninput="filterData()" class="bg-transparent text-xs text-slate-700 font-bold outline-none cursor-pointer">
                         </div>
                         <button onclick="clearDateFilter()" title="إعادة ضبط التاريخ" class="p-2 bg-slate-200 hover:bg-slate-300 rounded-xl text-xs text-slate-600 transition">
                             ✖
@@ -267,7 +266,7 @@
                     </div>
                 </div>
 
-                <!-- جدول السجلات -->
+                <!-- جدول عرض السجلات والملاحظات -->
                 <div class="ios-card overflow-hidden p-6">
                     <div class="overflow-x-auto">
                         <table class="w-full text-right text-sm border-collapse">
@@ -276,7 +275,7 @@
                                     <th class="pb-4 pr-3">الزبون</th>
                                     <th class="pb-4">رقم الهاتف</th>
                                     <th class="pb-4 text-center">الطاولة</th>
-                                    <th class="pb-4">الملاحظات</th>
+                                    <th class="pb-4 w-2/5">الملاحظات</th>
                                     <th class="pb-4">التاريخ والوقت</th>
                                 </tr>
                             </thead>
@@ -294,11 +293,59 @@
 
     </div>
 
+    <!-- نافذة منبثقة للملاحظات الطويلة -->
+    <div id="note-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm no-print">
+        <div class="ios-card max-w-lg w-full p-6 space-y-4 shadow-2xl">
+            <h3 class="text-base font-extrabold text-slate-900 border-b pb-2">تفاصيل الملاحظة</h3>
+            <p id="modal-note-content" class="text-xs text-slate-700 leading-relaxed whitespace-pre-wrap font-medium"></p>
+            <div class="text-left">
+                <button onclick="closeNoteModal()" class="ios-btn-primary px-5 py-2 text-xs font-bold">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzybaVrQUirtdNLIxjlQvdUjIfPniJOVijZ8KeNx_MFYWToIho14EjM4U5XPIUTrH6e/exec";
+
         let rawDashboardData = [];
+        let isDashboardUnlocked = false;
+
+        // عند فتح الصفحة: فحص الرابط التلقائي لإتاحة الدخول المباشر للمدير
+        window.addEventListener('load', () => {
+            // كشف معلمات الرابط URL
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('view') === 'dashboard') {
+                switchTab('tab-dashboard');
+            }
+
+            // دعم التحديث المباشر PWA
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw.js').then(reg => {
+                    reg.onupdatefound = () => {
+                        const installingWorker = reg.installing;
+                        installingWorker.onstatechange = () => {
+                            if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                document.getElementById('update-banner').classList.remove('hidden');
+                            }
+                        };
+                    };
+                });
+            }
+        });
+
+        // قفل الداشبورد أوتوماتيكياً عند إغلاق الشاشة أو الخروج من التطبيق
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && isDashboardUnlocked) {
+                lockDashboardNow();
+            }
+        });
 
         function switchTab(tabId) {
+            // قفل الداشبورد أوتوماتيكياً عند الانتقال لتاب الإدخال
+            if (tabId !== 'tab-dashboard' && isDashboardUnlocked) {
+                lockDashboardNow();
+            }
+
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.getElementById(tabId).classList.remove('hidden');
 
@@ -314,33 +361,33 @@
             }
         }
 
-        function openNumpad() {
-            document.getElementById('numpad-container').classList.remove('hidden');
-        }
-        function closeNumpad() {
-            document.getElementById('numpad-container').classList.add('hidden');
-        }
-        function pressNum(num) {
-            const input = document.getElementById('live-phone');
-            input.value += num;
-        }
-        function clearNum() {
-            document.getElementById('live-phone').value = '';
-        }
+        function openNumpad() { document.getElementById('numpad-container').classList.remove('hidden'); }
+        function closeNumpad() { document.getElementById('numpad-container').classList.add('hidden'); }
+        function pressNum(num) { document.getElementById('live-phone').value += num; }
+        function clearNum() { document.getElementById('live-phone').value = ''; }
         function deleteNum() {
             const input = document.getElementById('live-phone');
             input.value = input.value.slice(0, -1);
         }
 
         function unlockDashboard() {
-            const pass = document.getElementById('dashboard-passcode').value;
-            if (pass === "2024") {
+            const inputVal = document.getElementById('dashboard-passcode').value.trim();
+            // الدخول المباشر برقم السر 2024 فقط
+            if (inputVal === "2024") {
+                isDashboardUnlocked = true;
                 document.getElementById('dashboard-lock').classList.add('hidden');
                 document.getElementById('dashboard-content').classList.remove('hidden');
                 loadDashboardData();
             } else {
                 alert("رمز الحماية غير صحيح!");
             }
+        }
+
+        function lockDashboardNow() {
+            isDashboardUnlocked = false;
+            document.getElementById('dashboard-passcode').value = '';
+            document.getElementById('dashboard-content').classList.add('hidden');
+            document.getElementById('dashboard-lock').classList.remove('hidden');
         }
 
         function submitLiveForm(e) {
@@ -359,7 +406,7 @@
 
             fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) })
             .then(res => res.json())
-            .then(res => {
+            .then(() => {
                 alert("تم تسجيل بيانات الطاولة بنجاح!");
                 document.getElementById('live-name').value = '';
                 document.getElementById('live-phone').value = '';
@@ -399,7 +446,8 @@
                 return;
             }
 
-            data.forEach(row => {
+            data.forEach((row) => {
+                const safeNote = row.notes || '-';
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50/70 transition-colors duration-150">
                         <td class="py-4 pr-3 font-bold text-slate-900">${row.name || '-'}</td>
@@ -409,10 +457,23 @@
                                 ${row.tableNo || '-'}
                             </span>
                         </td>
-                        <td class="py-4 text-slate-600 text-xs max-w-xs truncate">${row.notes || '-'}</td>
-                        <td class="py-4 text-slate-400 text-xs">${row.date || '-'}</td>
+                        <td class="py-4 text-slate-700 text-xs leading-relaxed whitespace-pre-wrap break-words cursor-pointer hover:text-blue-600 transition" onclick="openNoteModal(\`${encodeURIComponent(safeNote)}\`)">
+                            ${safeNote}
+                        </td>
+                        <td class="py-4 text-slate-400 text-xs whitespace-nowrap">${row.date || '-'}</td>
                     </tr>`;
             });
+        }
+
+        function openNoteModal(encodedNote) {
+            const decoded = decodeURIComponent(encodedNote);
+            if(decoded === '-') return;
+            document.getElementById('modal-note-content').innerText = decoded;
+            document.getElementById('note-modal').classList.remove('hidden');
+        }
+
+        function closeNoteModal() {
+            document.getElementById('note-modal').classList.add('hidden');
         }
 
         function filterData() {
@@ -422,15 +483,13 @@
 
             const fromDate = fromDateVal ? new Date(fromDateVal) : null;
             const toDate = toDateVal ? new Date(toDateVal) : null;
-            if(toDate) toDate.setHours(23, 59, 59, 999); // تضمين نهاية اليوم المحدد
+            if(toDate) toDate.setHours(23, 59, 59, 999);
 
             const filtered = rawDashboardData.filter(item => {
-                // فلترة النص
                 const matchQuery = (item.name && item.name.toLowerCase().includes(query)) ||
                                    (item.phone && item.phone.includes(query)) ||
                                    (item.tableNo && item.tableNo.toString().includes(query));
 
-                // فلترة التاريخ
                 let matchDate = true;
                 if (item.date && (fromDate || toDate)) {
                     const itemDate = new Date(item.date);
@@ -452,9 +511,7 @@
             filterData();
         }
 
-        function triggerPrint() {
-            window.print();
-        }
+        function triggerPrint() { window.print(); }
 
         function exportToExcel() {
             if(!rawDashboardData || rawDashboardData.length === 0) {
