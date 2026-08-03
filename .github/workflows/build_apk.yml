@@ -1,4 +1,4 @@
-Name: Build Android APK
+name: Build Android APK
 
 on:
   push:
@@ -34,11 +34,11 @@ jobs:
           cd build_app
           cordova platform add android
           
-          # رفع رقم الإصدار لـ 1.0.1 لتسهيل التحديث على التابلت
+          # رفع رقم الإصدار لـ 1.0.1
           sed -i 's/version="1.0.0"/version="1.0.1"/g' config.xml
           
-          # توجيه التطبيق لفتح موقع GitHub Pages المباشر بدلاً من الملف الداخلي
-          sed -i 's|<content src="index.html" />|<content src="https://bytesal.github.io/matleek/" />|g' config.xml
+          # توجيه التطبيق لفتح موقع GitHub Pages المباشر
+          sed -i 's|src="index.html"|src="https://bytesal.github.io/matleek/"|g' config.xml
           
           cordova build android --verbose
 
