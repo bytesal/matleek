@@ -16,6 +16,7 @@
             font-family: 'Cairo', -apple-system, BlinkMacSystemFont, sans-serif; 
             overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .video-bg {
@@ -30,6 +31,7 @@
             transform: translate(-50%, -50%);
             object-fit: cover;
             filter: brightness(0.9) contrast(1.05);
+            transition: filter 0.3s ease;
         }
 
         .video-overlay {
@@ -42,6 +44,7 @@
             backdrop-filter: blur(25px) saturate(180%);
             -webkit-backdrop-filter: blur(25px) saturate(180%);
             z-index: -1;
+            transition: background 0.3s ease;
         }
 
         .ios-card {
@@ -51,6 +54,7 @@
             border: 1px solid rgba(255, 255, 255, 0.95);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03), 0 1px 4px rgba(0, 0, 0, 0.02);
             border-radius: 24px;
+            transition: background 0.3s ease, border-color 0.3s ease;
         }
 
         .ios-input {
@@ -96,6 +100,48 @@
             transform: scale(0.95);
         }
 
+        /* 🌙 تنسيقات الوضع الداكن (Dark Mode) */
+        body.dark-mode {
+            background-color: #0f172a;
+            color: #f8fafc;
+        }
+
+        body.dark-mode .video-bg {
+            filter: brightness(0.4) contrast(1.1);
+        }
+
+        body.dark-mode .video-overlay {
+            background: rgba(15, 23, 42, 0.82);
+        }
+
+        body.dark-mode nav {
+            background: rgba(15, 23, 42, 0.75) !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+        }
+
+        body.dark-mode .ios-card {
+            background: rgba(30, 41, 59, 0.85);
+            border-color: rgba(255, 255, 255, 0.1);
+            color: #f8fafc;
+        }
+
+        body.dark-mode .ios-input {
+            background: rgba(15, 23, 42, 0.6);
+            border-color: rgba(255, 255, 255, 0.15);
+            color: #f8fafc;
+        }
+
+        body.dark-mode .num-key {
+            background: #334155;
+            color: #f8fafc;
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, 
+        body.dark-mode label, body.dark-mode td {
+            color: #f8fafc !important;
+        }
+
         @media print {
             .no-print, nav, .video-bg, .video-overlay, #dashboard-lock, .numpad-container { display: none !important; }
             body { background: white !important; color: black !important; }
@@ -126,9 +172,16 @@
     <nav class="no-print sticky top-0 z-50 p-4 border-b border-white/60 bg-white/60 backdrop-blur-2xl">
         <div class="max-w-6xl mx-auto flex flex-wrap justify-between items-center gap-4">
             
-            <div class="flex flex-wrap p-1.5 bg-slate-200/50 backdrop-blur-md rounded-2xl border border-white/40 text-xs font-semibold">
-                <button onclick="switchTab('tab-live')" id="btn-tab-live" class="nav-btn px-5 py-2 rounded-xl transition-all duration-300 bg-white text-blue-600 shadow-sm font-bold">إدخال طاولات</button>
-                <button onclick="switchTab('tab-dashboard')" id="btn-tab-dashboard" class="nav-btn px-5 py-2 rounded-xl transition-all duration-300 text-slate-600 hover:text-slate-900">الداشبورد والتقارير 🔐</button>
+            <div class="flex items-center gap-2">
+                <div class="flex flex-wrap p-1.5 bg-slate-200/50 backdrop-blur-md rounded-2xl border border-white/40 text-xs font-semibold">
+                    <button onclick="switchTab('tab-live')" id="btn-tab-live" class="nav-btn px-5 py-2 rounded-xl transition-all duration-300 bg-white text-blue-600 shadow-sm font-bold">إدخال طاولات</button>
+                    <button onclick="switchTab('tab-dashboard')" id="btn-tab-dashboard" class="nav-btn px-5 py-2 rounded-xl transition-all duration-300 text-slate-600 hover:text-slate-900">الداشبورد والتقارير 🔐</button>
+                </div>
+
+                <!-- 🌙 زر تبديل الثيم -->
+                <button onclick="toggleTheme()" id="theme-btn" title="تغيير الثيم" class="p-2.5 bg-slate-200/60 dark:bg-slate-700/60 hover:bg-slate-300 rounded-2xl text-base transition border border-white/40">
+                    🌙
+                </button>
             </div>
 
             <div class="flex items-center gap-3 text-left" dir="ltr">
@@ -149,7 +202,7 @@
         <!-- 1. واجهة إدخال الطاولات المباشرة -->
         <section id="tab-live" class="tab-content space-y-6">
             <div class="max-w-lg mx-auto ios-card p-6 md:p-8">
-                <div class="border-b border-slate-100 pb-4 mb-6 text-center">
+                <div class="border-b border-slate-100 dark:border-slate-700 pb-4 mb-6 text-center">
                     <h2 class="text-xl font-extrabold text-slate-900">تسجيل طاولة جديدة</h2>
                 </div>
                 <form onsubmit="submitLiveForm(event)" class="space-y-4">
@@ -252,15 +305,15 @@
                     </div>
                     
                     <div class="w-full md:w-auto flex items-center gap-2">
-                        <div class="flex items-center gap-1.5 bg-slate-100/80 px-3 py-2 rounded-xl border border-slate-200/80">
+                        <div class="flex items-center gap-1.5 bg-slate-100/80 dark:bg-slate-800/80 px-3 py-2 rounded-xl border border-slate-200/80 dark:border-slate-700">
                             <span class="text-[11px] font-bold text-slate-500">من:</span>
-                            <input type="date" id="date-from" onchange="filterData()" oninput="filterData()" class="bg-transparent text-xs text-slate-700 font-bold outline-none cursor-pointer">
+                            <input type="date" id="date-from" onchange="filterData()" oninput="filterData()" class="bg-transparent text-xs text-slate-700 dark:text-slate-200 font-bold outline-none cursor-pointer">
                         </div>
-                        <div class="flex items-center gap-1.5 bg-slate-100/80 px-3 py-2 rounded-xl border border-slate-200/80">
+                        <div class="flex items-center gap-1.5 bg-slate-100/80 dark:bg-slate-800/80 px-3 py-2 rounded-xl border border-slate-200/80 dark:border-slate-700">
                             <span class="text-[11px] font-bold text-slate-500">إلى:</span>
-                            <input type="date" id="date-to" onchange="filterData()" oninput="filterData()" class="bg-transparent text-xs text-slate-700 font-bold outline-none cursor-pointer">
+                            <input type="date" id="date-to" onchange="filterData()" oninput="filterData()" class="bg-transparent text-xs text-slate-700 dark:text-slate-200 font-bold outline-none cursor-pointer">
                         </div>
-                        <button onclick="clearDateFilter()" title="إعادة ضبط التاريخ" class="p-2 bg-slate-200 hover:bg-slate-300 rounded-xl text-xs text-slate-600 transition">
+                        <button onclick="clearDateFilter()" title="إعادة ضبط التاريخ" class="p-2 bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 rounded-xl text-xs text-slate-600 dark:text-slate-300 transition">
                             ✖
                         </button>
                     </div>
@@ -271,7 +324,7 @@
                     <div class="overflow-x-auto">
                         <table class="w-full text-right text-sm border-collapse">
                             <thead>
-                                <tr class="border-b border-slate-200/80 text-slate-400 text-xs font-bold uppercase tracking-wider">
+                                <tr class="border-b border-slate-200/80 dark:border-slate-700 text-slate-400 text-xs font-bold uppercase tracking-wider">
                                     <th class="pb-4 pr-3">الزبون</th>
                                     <th class="pb-4">رقم الهاتف</th>
                                     <th class="pb-4 text-center">الطاولة</th>
@@ -279,7 +332,7 @@
                                     <th class="pb-4">التاريخ والوقت</th>
                                 </tr>
                             </thead>
-                            <tbody id="dashboard-table-body" class="divide-y divide-slate-100/80 text-slate-700 font-medium">
+                            <tbody id="dashboard-table-body" class="divide-y divide-slate-100/80 dark:divide-slate-800 text-slate-700 font-medium">
                                 <tr>
                                     <td colspan="5" class="py-12 text-center text-slate-400 text-xs">جاري تحميل البيانات من الخادم...</td>
                                 </tr>
@@ -296,8 +349,8 @@
     <!-- نافذة منبثقة للملاحظات الطويلة -->
     <div id="note-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm no-print">
         <div class="ios-card max-w-lg w-full p-6 space-y-4 shadow-2xl">
-            <h3 class="text-base font-extrabold text-slate-900 border-b pb-2">تفاصيل الملاحظة</h3>
-            <p id="modal-note-content" class="text-xs text-slate-700 leading-relaxed whitespace-pre-wrap font-medium"></p>
+            <h3 class="text-base font-extrabold text-slate-900 border-b pb-2 dark:border-slate-700">تفاصيل الملاحظة</h3>
+            <p id="modal-note-content" class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-wrap font-medium"></p>
             <div class="text-left">
                 <button onclick="closeNoteModal()" class="ios-btn-primary px-5 py-2 text-xs font-bold">إغلاق</button>
             </div>
@@ -310,10 +363,26 @@
         let rawDashboardData = [];
         let isDashboardUnlocked = false;
 
+        // دالة تبديل الثيم وحفظ التفضيل
+        function toggleTheme() {
+            const isDark = document.body.classList.toggle('dark-mode');
+            const themeBtn = document.getElementById('theme-btn');
+            themeBtn.innerText = isDark ? '☀️' : '🌙';
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        }
+
+        // استرجاع الثيم المفضل للمستخدم عند التحميل
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            window.addEventListener('DOMContentLoaded', () => {
+                const themeBtn = document.getElementById('theme-btn');
+                if(themeBtn) themeBtn.innerText = '☀️';
+            });
+        }
+
         // فحص التحديث التلقائي الفوري عبر Service Worker
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('./sw.js').then((reg) => {
-                // إجبار المتصفح على التحقق من التحديثات فور فتح التطبيق
                 reg.update();
 
                 reg.onupdatefound = () => {
@@ -321,7 +390,6 @@
                     installingWorker.onstatechange = () => {
                         if (installingWorker.state === 'installed') {
                             if (navigator.serviceWorker.controller) {
-                                // إظهار شريط التحديث أو إعادة التحميل الفوري
                                 document.getElementById('update-banner').classList.remove('hidden');
                             }
                         }
@@ -330,7 +398,6 @@
             });
         }
 
-        // عند فتح الصفحة: فحص الرابط التلقائي لإتاحة الدخول المباشر للمدير
         window.addEventListener('load', () => {
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('view') === 'dashboard') {
@@ -338,7 +405,6 @@
             }
         });
 
-        // قفل الداشبورد أوتوماتيكياً عند إغلاق الشاشة
         document.addEventListener('visibilitychange', () => {
             if (document.hidden && isDashboardUnlocked) {
                 lockDashboardNow();
@@ -452,15 +518,15 @@
             data.forEach((row) => {
                 const safeNote = row.notes || '-';
                 tbody.innerHTML += `
-                    <tr class="hover:bg-slate-50/70 transition-colors duration-150">
-                        <td class="py-4 pr-3 font-bold text-slate-900">${row.name || '-'}</td>
-                        <td class="py-4 text-slate-500 font-mono text-xs" dir="ltr">${row.phone || '-'}</td>
+                    <tr class="hover:bg-slate-50/70 dark:hover:bg-slate-800/50 transition-colors duration-150">
+                        <td class="py-4 pr-3 font-bold text-slate-900 dark:text-slate-100">${row.name || '-'}</td>
+                        <td class="py-4 text-slate-500 dark:text-slate-400 font-mono text-xs" dir="ltr">${row.phone || '-'}</td>
                         <td class="py-4 text-center">
-                            <span class="inline-block px-3 py-1 bg-slate-100 text-slate-800 rounded-xl font-extrabold text-xs">
+                            <span class="inline-block px-3 py-1 bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-xl font-extrabold text-xs">
                                 ${row.tableNo || '-'}
                             </span>
                         </td>
-                        <td class="py-4 text-slate-700 text-xs leading-relaxed whitespace-pre-wrap break-words cursor-pointer hover:text-blue-600 transition" onclick="openNoteModal(\`${encodeURIComponent(safeNote)}\`)">
+                        <td class="py-4 text-slate-700 dark:text-slate-300 text-xs leading-relaxed whitespace-pre-wrap break-words cursor-pointer hover:text-blue-600 transition" onclick="openNoteModal(\`${encodeURIComponent(safeNote)}\`)">
                             ${safeNote}
                         </td>
                         <td class="py-4 text-slate-400 text-xs whitespace-nowrap">${row.date || '-'}</td>
