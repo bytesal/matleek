@@ -1,4 +1,4 @@
-const CACHE_NAME = 'matleek-cache-v2';
+const CACHE_NAME = 'matleek-cache-v3';
 
 // 1. التثبيت والتفعيل المباشر بدون انتظار
 self.addEventListener('install', (event) => {
