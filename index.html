@@ -12,115 +12,116 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
+        :root {
+            --bg-main: #f8fafc;
+            --bg-card: #ffffff;
+            --border-color: #e2e8f0;
+            --text-title: #0f172a;
+            --text-body: #334155;
+            --text-muted: #64748b;
+            --input-bg: #ffffff;
+        }
+
+        body.dark-mode {
+            --bg-main: #090d16;
+            --bg-card: #111827;
+            --border-color: #1f2937;
+            --text-title: #f9fafb;
+            --text-body: #e5e7eb;
+            --text-muted: #9ca3af;
+            --input-bg: #1f2937;
+        }
+
         body { 
             font-family: 'Cairo', sans-serif; 
-            background-color: #f1f5f9;
-            color: #0f172a;
-            transition: background-color 0.2s, color 0.2s;
+            background-color: var(--bg-main);
+            color: var(--text-body);
+            transition: background-color 0.25s, color 0.25s;
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* الثيم الداكن */
-        body.dark-mode {
-            background-color: #0f172a;
-            color: #f8fafc;
+        .ui-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
         }
 
-        .clean-card {
-            background-color: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        .ui-input {
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-title);
+            border-radius: 12px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .ui-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+
+        .text-title { color: var(--text-title); }
+        .text-body { color: var(--text-body); }
+        .text-muted { color: var(--text-muted); }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: #ffffff;
+            font-weight: 700;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
             transition: all 0.2s;
         }
+        .btn-primary:active { scale: 0.98; }
 
-        body.dark-mode .clean-card {
-            background-color: #1e293b;
-            border-color: #334155;
+        .numpad-btn {
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-title);
+            font-size: 1.5rem;
+            font-weight: 700;
+            border-radius: 14px;
+            transition: all 0.1s;
         }
-
-        .clean-input {
-            background-color: #f8fafc;
-            border: 1px solid #cbd5e1;
-            border-radius: 10px;
-            color: #0f172a;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-        .clean-input:focus {
+        .numpad-btn:active {
+            background-color: #2563eb;
+            color: #ffffff;
             border-color: #2563eb;
         }
 
-        body.dark-mode .clean-input {
-            background-color: #0f172a;
-            border-color: #334155;
-            color: #f8fafc;
-        }
-
-        .btn-main {
-            background-color: #2563eb;
-            color: #ffffff;
-            border-radius: 10px;
-            font-weight: 700;
-            transition: background-color 0.2s;
-        }
-        .btn-main:hover {
-            background-color: #1d4ed8;
-        }
-
-        .num-btn {
-            background-color: #f8fafc;
-            border: 1px solid #cbd5e1;
-            border-radius: 10px;
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #0f172a;
-            transition: background-color 0.1s;
-        }
-        .num-btn:active {
-            background-color: #2563eb;
-            color: #ffffff;
-        }
-
-        body.dark-mode .num-btn {
-            background-color: #0f172a;
-            border-color: #334155;
-            color: #f8fafc;
-        }
-
         @media print {
-            .no-print, nav { display: none !important; }
+            .no-print, nav, #numpad-modal { display: none !important; }
             body { background: white !important; color: black !important; }
-            .clean-card { border: none !important; box-shadow: none !important; }
+            .ui-card { border: none !important; box-shadow: none !important; }
             #dashboard-content { display: block !important; }
             table { width: 100% !important; border-collapse: collapse !important; }
             th, td { border: 1px solid #ddd !important; padding: 8px !important; }
         }
     </style>
 </head>
-<body class="min-h-screen antialiased">
+<body class="min-h-screen flex flex-col antialiased">
 
-    <!-- شريط تنقل بسيط ونظيف -->
-    <nav class="no-print border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-6 py-3">
+    <!-- Navbar -->
+    <nav class="no-print border-b border-slate-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-6 py-3.5 sticky top-0 z-30">
         <div class="max-w-6xl mx-auto flex justify-between items-center">
             
             <div class="flex items-center gap-3">
-                <div class="w-9 h-9 bg-blue-600 rounded-lg flex items-center justify-center text-white font-black text-lg">
+                <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-extrabold text-xl shadow-md shadow-blue-500/30">
                     M
                 </div>
                 <div>
-                    <h1 class="text-sm font-bold leading-none">Matleek Restaurant</h1>
-                    <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">نظام إدارة الطاولات والتقارير</p>
+                    <h1 class="text-base font-bold text-title leading-tight">Matleek POS</h1>
+                    <p class="text-xs text-muted">نظام إدارة الطاولات والتقارير</p>
                 </div>
             </div>
 
-            <div class="flex items-center gap-2">
-                <div class="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-lg text-xs font-bold">
-                    <button onclick="switchTab('tab-live')" id="btn-tab-live" class="nav-btn px-4 py-1.5 rounded-md bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-xs">إدخال الطاولات</button>
-                    <button onclick="switchTab('tab-dashboard')" id="btn-tab-dashboard" class="nav-btn px-4 py-1.5 rounded-md text-slate-600 dark:text-slate-400">التقارير والداشبورد 🔐</button>
+            <div class="flex items-center gap-3">
+                <div class="flex bg-slate-100 dark:bg-gray-800 p-1 rounded-xl text-xs font-bold border border-slate-200 dark:border-gray-700">
+                    <button onclick="switchTab('tab-live')" id="btn-tab-live" class="nav-btn px-5 py-2 rounded-lg bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow-sm">إدخال الطاولات</button>
+                    <button onclick="switchTab('tab-dashboard')" id="btn-tab-dashboard" class="nav-btn px-5 py-2 rounded-lg text-muted">التقارير والداشبورد 🔐</button>
                 </div>
 
-                <button onclick="toggleTheme()" id="theme-btn" class="p-1.5 border border-slate-200 dark:border-slate-700 rounded-lg text-sm bg-slate-50 dark:bg-slate-800">
+                <button onclick="toggleTheme()" id="theme-btn" class="p-2.5 border border-slate-200 dark:border-gray-700 rounded-xl text-sm bg-slate-50 dark:bg-gray-800 text-title">
                     🌙
                 </button>
             </div>
@@ -128,127 +129,112 @@
         </div>
     </nav>
 
-    <main class="max-w-6xl mx-auto p-4 md:p-6">
+    <main class="max-w-6xl mx-auto p-4 md:p-8 flex-1 w-full">
 
         <!-- 1. واجهة إدخال الطاولات -->
-        <section id="tab-live" class="tab-content space-y-4">
-            <div class="clean-card p-6 max-w-3xl mx-auto">
-                <div class="border-b border-slate-100 dark:border-slate-800 pb-3 mb-4">
-                    <h2 class="text-base font-bold">تسجيل طاولة جديدة</h2>
+        <section id="tab-live" class="tab-content">
+            <div class="ui-card p-6 md:p-8 max-w-xl mx-auto">
+                <div class="border-b border-slate-100 dark:border-gray-800 pb-4 mb-6">
+                    <h2 class="text-lg font-bold text-title">تسجيل طاولة جديدة</h2>
+                    <p class="text-xs text-muted mt-0.5">قم بتعبئة البيانات أدناه لإرسالها فوراً للشبكة</p>
                 </div>
 
-                <form onsubmit="submitLiveForm(event)" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <form onsubmit="submitLiveForm(event)" class="space-y-5">
                     
-                    <!-- الحقول -->
-                    <div class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-bold text-title mb-1.5">اسم الزبون *</label>
+                        <input type="text" id="live-name" required placeholder="أدخل اسم الزبون..." class="w-full ui-input p-3 text-sm">
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">اسم الزبون *</label>
-                            <input type="text" id="live-name" required placeholder="أدخل اسم الزبون" class="w-full clean-input p-2.5 text-sm">
+                            <label class="block text-xs font-bold text-title mb-1.5">رقم الهاتف *</label>
+                            <input type="text" id="live-phone" readonly onclick="openNumpad('live-phone', 'رقم الهاتف')" required placeholder="انقر للإدخال..." class="w-full ui-input p-3 text-sm font-bold text-center cursor-pointer bg-blue-50/30 dark:bg-blue-950/20 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-900">
                         </div>
 
                         <div>
-                            <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">رقم الهاتف *</label>
-                            <input type="text" id="live-phone" readonly required placeholder="استخدم لوحة الأرقام ←" class="w-full clean-input p-2.5 text-sm font-bold text-center tracking-wider bg-blue-50/50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400">
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">رقم الطاولة *</label>
-                            <input type="text" id="live-table" required placeholder="مثال: 12" class="w-full clean-input p-2.5 text-sm">
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">ملاحظات</label>
-                            <textarea id="live-notes" rows="2" placeholder="ملاحظات اختيارية..." class="w-full clean-input p-2.5 text-sm"></textarea>
+                            <label class="block text-xs font-bold text-title mb-1.5">رقم الطاولة *</label>
+                            <input type="text" id="live-table" readonly onclick="openNumpad('live-table', 'رقم الطاولة')" required placeholder="انقر للإدخال..." class="w-full ui-input p-3 text-sm font-bold text-center cursor-pointer bg-blue-50/30 dark:bg-blue-950/20 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-900">
                         </div>
                     </div>
 
-                    <!-- لوحة الأرقام المدمجة -->
-                    <div class="bg-slate-50 dark:bg-slate-900/60 p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
-                        <div class="flex justify-between items-center pb-2 border-b border-slate-200 dark:border-slate-800 mb-2">
-                            <span class="text-xs font-bold text-slate-500">لوحة الإدخال</span>
-                            <button type="button" onclick="clearNum()" class="text-xs text-rose-500 font-bold hover:underline">مسح الكل</button>
-                        </div>
-
-                        <div class="grid grid-cols-3 gap-2" dir="ltr">
-                            <button type="button" onclick="pressNum('1')" class="num-btn py-2.5">1</button>
-                            <button type="button" onclick="pressNum('2')" class="num-btn py-2.5">2</button>
-                            <button type="button" onclick="pressNum('3')" class="num-btn py-2.5">3</button>
-                            <button type="button" onclick="pressNum('4')" class="num-btn py-2.5">4</button>
-                            <button type="button" onclick="pressNum('5')" class="num-btn py-2.5">5</button>
-                            <button type="button" onclick="pressNum('6')" class="num-btn py-2.5">6</button>
-                            <button type="button" onclick="pressNum('7')" class="num-btn py-2.5">7</button>
-                            <button type="button" onclick="pressNum('8')" class="num-btn py-2.5">8</button>
-                            <button type="button" onclick="pressNum('9')" class="num-btn py-2.5">9</button>
-                            <button type="button" onclick="pressNum('+')" class="num-btn py-2.5 text-sm text-slate-400">+</button>
-                            <button type="button" onclick="pressNum('0')" class="num-btn py-2.5">0</button>
-                            <button type="button" onclick="deleteNum()" class="num-btn py-2.5 text-amber-600 font-bold">⌫</button>
-                        </div>
-
-                        <button type="submit" id="btn-live-submit" class="btn-main w-full py-3 text-sm mt-3">
-                            حفظ وحفظ البيانات 🚀
-                        </button>
+                    <div>
+                        <label class="block text-xs font-bold text-title mb-1.5">ملاحظات</label>
+                        <textarea id="live-notes" rows="3" placeholder="أية طلبات أو ملاحظات إضافية..." class="w-full ui-input p-3 text-sm"></textarea>
                     </div>
+
+                    <button type="submit" id="btn-live-submit" class="btn-primary w-full py-3.5 text-sm mt-2">
+                        حفظ وتأجيل البيانات 🚀
+                    </button>
 
                 </form>
             </div>
         </section>
 
         <!-- 2. قسم التقارير والداشبورد -->
-        <section id="tab-dashboard" class="tab-content hidden space-y-4">
+        <section id="tab-dashboard" class="tab-content hidden space-y-5">
             
             <!-- قفل الحماية -->
-            <div id="dashboard-lock" class="clean-card p-6 max-w-sm mx-auto text-center space-y-3 no-print">
-                <div class="text-2xl">🔒</div>
-                <h3 class="text-sm font-bold">كلمة المرور مطلوبة</h3>
-                <input type="password" id="dashboard-passcode" placeholder="أدخل كلمة المرور" class="w-full clean-input p-2.5 text-center text-sm font-bold tracking-widest">
-                <button onclick="unlockDashboard()" class="btn-main w-full py-2.5 text-xs">دخول</button>
+            <div id="dashboard-lock" class="ui-card p-8 max-w-sm mx-auto text-center space-y-4 no-print my-12">
+                <div class="w-12 h-12 bg-blue-100 dark:bg-gray-800 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center mx-auto text-2xl">
+                    🔒
+                </div>
+                <div>
+                    <h3 class="text-base font-bold text-title">منطقة محمية</h3>
+                    <p class="text-xs text-muted mt-1">أدخل كلمة المرور لعرض التقارير واللوحة</p>
+                </div>
+                <input type="password" id="dashboard-passcode" placeholder="••••" class="w-full ui-input p-3 text-center text-lg font-bold tracking-widest">
+                <button onclick="unlockDashboard()" class="btn-primary w-full py-3 text-xs">دخول اللوحة</button>
             </div>
 
             <!-- المحتوى -->
-            <div id="dashboard-content" class="hidden space-y-4">
+            <div id="dashboard-content" class="hidden space-y-5">
                 
-                <div class="clean-card p-4 no-print flex flex-col sm:flex-row justify-between items-center gap-3">
+                <div class="ui-card p-5 no-print flex flex-col md:flex-row justify-between items-center gap-4">
                     <div>
-                        <h2 class="text-base font-bold">جدول السجلات والتقارير</h2>
-                        <p class="text-xs text-slate-500 dark:text-slate-400">الإجمالي: <span id="stat-total" class="font-bold text-blue-600 dark:text-blue-400">0</span></p>
+                        <h2 class="text-base font-bold text-title">جدول السجلات والتقارير</h2>
+                        <p class="text-xs text-muted mt-0.5">إجمالي السجلات المعروضة: <span id="stat-total" class="font-bold text-blue-600 dark:text-blue-400">0</span></p>
                     </div>
 
-                    <div class="flex flex-wrap gap-2">
-                        <button onclick="lockDashboardNow()" class="px-3 py-1.5 text-xs font-bold text-rose-600 border border-rose-200 dark:border-rose-900 rounded-lg">قفل</button>
-                        <button onclick="loadDashboardData()" class="px-3 py-1.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 rounded-lg">تحديث 🔄</button>
-                        <button onclick="exportToExcel()" class="px-3 py-1.5 text-xs font-bold bg-emerald-600 text-white rounded-lg">Excel 📊</button>
-                        <button onclick="triggerPrint()" class="btn-main px-4 py-1.5 text-xs">طباعة 🖨️</button>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <button onclick="lockDashboardNow()" class="px-3.5 py-2 text-xs font-bold text-rose-600 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 rounded-xl">قفل اللوحة</button>
+                        <button onclick="loadDashboardData()" class="px-3.5 py-2 text-xs font-bold bg-slate-100 dark:bg-gray-800 text-title border border-slate-200 dark:border-gray-700 rounded-xl">تحديث 🔄</button>
+                        <button onclick="exportToExcel()" class="px-3.5 py-2 text-xs font-bold bg-emerald-600 text-white rounded-xl shadow-sm">Excel 📊</button>
+                        <button onclick="triggerPrint()" class="btn-primary px-4 py-2 text-xs">طباعة 🖨️</button>
                     </div>
                 </div>
 
-                <!-- البحث والتصفية -->
-                <div class="clean-card p-3 no-print flex flex-col md:flex-row gap-2 items-center">
-                    <input type="text" id="search-input" oninput="filterData()" placeholder="بحث بالاسم، الرقم، أو الطاولة..." class="w-full md:flex-1 clean-input p-2 text-xs">
+                <!-- شريط البحث والتصفية المحدث بالكامل -->
+                <div class="ui-card p-4 no-print space-y-3 md:space-y-0 md:flex md:gap-3 md:items-center">
+                    <div class="flex-1">
+                        <input type="text" id="search-input" oninput="filterData()" placeholder="بحث بالاسم، رقم الهاتف، أو رقم الطاولة..." class="w-full ui-input p-2.5 text-xs">
+                    </div>
                     
-                    <div class="flex items-center gap-2 w-full md:w-auto text-xs">
-                        <input type="date" id="date-from" onchange="filterData()" class="clean-input p-1.5">
-                        <span class="text-slate-400">إلى</span>
-                        <input type="date" id="date-to" onchange="filterData()" class="clean-input p-1.5">
-                        <button onclick="clearDateFilter()" class="px-2 py-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg font-bold">✖</button>
+                    <div class="flex items-center gap-2 text-xs">
+                        <span class="text-muted font-bold whitespace-nowrap">من:</span>
+                        <input type="date" id="date-from" onchange="filterData()" class="ui-input p-2">
+                        <span class="text-muted font-bold whitespace-nowrap">إلى:</span>
+                        <input type="date" id="date-to" onchange="filterData()" class="ui-input p-2">
+                        <button onclick="clearDateFilter()" title="إعادة ضبط التاريخ" class="px-3 py-2 bg-slate-100 dark:bg-gray-800 text-title border border-slate-200 dark:border-gray-700 rounded-xl font-bold">✖</button>
                     </div>
                 </div>
 
                 <!-- الجدول -->
-                <div class="clean-card overflow-hidden">
+                <div class="ui-card overflow-hidden">
                     <div class="overflow-x-auto">
                         <table class="w-full text-right text-xs border-collapse">
-                            <thead class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-500 font-bold">
+                            <thead class="bg-slate-50 dark:bg-gray-800/60 border-b border-slate-200 dark:border-gray-800 text-muted font-bold">
                                 <tr>
-                                    <th class="p-3">الزبون</th>
-                                    <th class="p-3">الهاتف</th>
-                                    <th class="p-3 text-center">الطاولة</th>
-                                    <th class="p-3 w-1/3">الملاحظات</th>
-                                    <th class="p-3">التاريخ</th>
+                                    <th class="p-3.5">الزبون</th>
+                                    <th class="p-3.5">الهاتف</th>
+                                    <th class="p-3.5 text-center">الطاولة</th>
+                                    <th class="p-3.5 w-1/3">الملاحظات</th>
+                                    <th class="p-3.5">التاريخ والوقت</th>
                                 </tr>
                             </thead>
-                            <tbody id="dashboard-table-body" class="divide-y divide-slate-100 dark:divide-slate-800">
+                            <tbody id="dashboard-table-body" class="divide-y divide-slate-100 dark:divide-gray-800/60">
                                 <tr>
-                                    <td colspan="5" class="p-6 text-center text-slate-400">جاري تحميل البيانات...</td>
+                                    <td colspan="5" class="p-8 text-center text-muted">جاري تحميل البيانات...</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -260,12 +246,49 @@
 
     </main>
 
+    <!-- Modal لوحة الأرقام التفاعلية -->
+    <div id="numpad-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
+        <div class="ui-card p-6 w-full max-w-xs space-y-4 shadow-2xl relative animate-in fade-in zoom-in-95 duration-150">
+            
+            <div class="flex justify-between items-center border-b border-slate-100 dark:border-gray-800 pb-3">
+                <h3 id="numpad-title" class="text-sm font-bold text-title">إدخال رقم</h3>
+                <button type="button" onclick="closeNumpad()" class="text-slate-400 hover:text-rose-500 font-bold text-lg">✕</button>
+            </div>
+
+            <!-- شاشة عرض الرقم -->
+            <div id="numpad-display" class="w-full p-3 ui-input text-center text-xl font-bold text-blue-600 dark:text-blue-400 tracking-wider min-h-[50px] flex items-center justify-center bg-slate-50 dark:bg-gray-950">
+            </div>
+
+            <!-- الأزرار -->
+            <div class="grid grid-cols-3 gap-2.5" dir="ltr">
+                <button type="button" onclick="pressNumpadKey('1')" class="numpad-btn py-3">1</button>
+                <button type="button" onclick="pressNumpadKey('2')" class="numpad-btn py-3">2</button>
+                <button type="button" onclick="pressNumpadKey('3')" class="numpad-btn py-3">3</button>
+                <button type="button" onclick="pressNumpadKey('4')" class="numpad-btn py-3">4</button>
+                <button type="button" onclick="pressNumpadKey('5')" class="numpad-btn py-3">5</button>
+                <button type="button" onclick="pressNumpadKey('6')" class="numpad-btn py-3">6</button>
+                <button type="button" onclick="pressNumpadKey('7')" class="numpad-btn py-3">7</button>
+                <button type="button" onclick="pressNumpadKey('8')" class="numpad-btn py-3">8</button>
+                <button type="button" onclick="pressNumpadKey('9')" class="numpad-btn py-3">9</button>
+                <button type="button" onclick="clearNumpad()" class="numpad-btn py-3 text-xs text-rose-500 font-bold">مسح</button>
+                <button type="button" onclick="pressNumpadKey('0')" class="numpad-btn py-3">0</button>
+                <button type="button" onclick="deleteNumpadKey()" class="numpad-btn py-3 text-amber-500 font-bold">⌫</button>
+            </div>
+
+            <button type="button" onclick="closeNumpad()" class="btn-primary w-full py-3 text-xs mt-2">
+                تم التأكيد ✔️
+            </button>
+        </div>
+    </div>
+
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzybaVrQUirtdNLIxjlQvdUjIfPniJOVijZ8KeNx_MFYWToIho14EjM4U5XPIUTrH6e/exec";
 
         let rawDashboardData = [];
         let isDashboardUnlocked = false;
+        let currentTargetInputId = null;
 
+        // إدارة الثيمات
         function toggleTheme() {
             const isDark = document.body.classList.toggle('dark-mode');
             document.getElementById('theme-btn').innerText = isDark ? '☀️' : '🌙';
@@ -280,6 +303,41 @@
             });
         }
 
+        // لوحة الأرقام المنبثقة (Popup Numpad)
+        function openNumpad(inputId, title) {
+            currentTargetInputId = inputId;
+            document.getElementById('numpad-title').innerText = title;
+            document.getElementById('numpad-display').innerText = document.getElementById(inputId).value || '';
+            document.getElementById('numpad-modal').classList.remove('hidden');
+        }
+
+        function closeNumpad() {
+            document.getElementById('numpad-modal').classList.add('hidden');
+            currentTargetInputId = null;
+        }
+
+        function pressNumpadKey(key) {
+            if(!currentTargetInputId) return;
+            const input = document.getElementById(currentTargetInputId);
+            input.value += key;
+            document.getElementById('numpad-display').innerText = input.value;
+        }
+
+        function deleteNumpadKey() {
+            if(!currentTargetInputId) return;
+            const input = document.getElementById(currentTargetInputId);
+            input.value = input.value.slice(0, -1);
+            document.getElementById('numpad-display').innerText = input.value;
+        }
+
+        function clearNumpad() {
+            if(!currentTargetInputId) return;
+            const input = document.getElementById(currentTargetInputId);
+            input.value = '';
+            document.getElementById('numpad-display').innerText = '';
+        }
+
+        // التنقل بين التبويبات
         function switchTab(tabId) {
             if (tabId !== 'tab-dashboard' && isDashboardUnlocked) lockDashboardNow();
 
@@ -287,24 +345,18 @@
             document.getElementById(tabId).classList.remove('hidden');
 
             document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('bg-white', 'dark:bg-slate-700', 'text-blue-600', 'dark:text-blue-400', 'shadow-xs');
-                btn.classList.add('text-slate-600', 'dark:text-slate-400');
+                btn.classList.remove('bg-white', 'dark:bg-gray-700', 'text-blue-600', 'dark:text-blue-400', 'shadow-sm');
+                btn.classList.add('text-muted');
             });
 
             const activeBtn = document.getElementById(`btn-${tabId}`);
             if (activeBtn) {
-                activeBtn.classList.remove('text-slate-600', 'dark:text-slate-400');
-                activeBtn.classList.add('bg-white', 'dark:bg-slate-700', 'text-blue-600', 'dark:text-blue-400', 'shadow-xs');
+                activeBtn.classList.remove('text-muted');
+                activeBtn.classList.add('bg-white', 'dark:bg-gray-700', 'text-blue-600', 'dark:text-blue-400', 'shadow-sm');
             }
         }
 
-        function pressNum(num) { document.getElementById('live-phone').value += num; }
-        function clearNum() { document.getElementById('live-phone').value = ''; }
-        function deleteNum() {
-            const input = document.getElementById('live-phone');
-            input.value = input.value.slice(0, -1);
-        }
-
+        // قفل الداشبورد
         function unlockDashboard() {
             if (document.getElementById('dashboard-passcode').value.trim() === "2024") {
                 isDashboardUnlocked = true;
@@ -323,6 +375,7 @@
             document.getElementById('dashboard-lock').classList.remove('hidden');
         }
 
+        // إرسال البيانات
         function submitLiveForm(e) {
             e.preventDefault();
             const btn = document.getElementById('btn-live-submit');
@@ -349,23 +402,24 @@
             .catch(() => alert("حدث خطأ أثناء الحفظ"))
             .finally(() => {
                 btn.disabled = false;
-                btn.innerText = "حفظ وحفظ البيانات 🚀";
+                btn.innerText = "حفظ وتأجيل البيانات 🚀";
             });
         }
 
+        // جلب وقراءة بيانات الداشبورد
         function loadDashboardData() {
             const tbody = document.getElementById('dashboard-table-body');
-            tbody.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-slate-400">جاري التحميل...</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-muted">جاري تحميل البيانات...</td></tr>';
 
             fetch(`${SCRIPT_URL}?action=getDashboardData`)
             .then(res => res.json())
             .then(data => {
-                rawDashboardData = data.reverse();
+                rawDashboardData = Array.isArray(data) ? data.reverse() : [];
                 document.getElementById('stat-total').innerText = rawDashboardData.length;
                 renderTableData(rawDashboardData);
             })
             .catch(() => {
-                tbody.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-rose-500 font-bold">فشل جلب البيانات</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-rose-500 font-bold">فشل جلب البيانات من السيرفر</td></tr>';
             });
         }
 
@@ -374,48 +428,58 @@
             tbody.innerHTML = '';
             
             if(!data || data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-slate-400">لا توجد سجلات</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-muted">لا توجد سجلات مطابقة للبحث</td></tr>';
                 return;
             }
 
             data.forEach((row) => {
                 tbody.innerHTML += `
-                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50">
-                        <td class="p-3 font-bold">${row.name || '-'}</td>
-                        <td class="p-3 font-mono text-slate-500" dir="ltr">${row.phone || '-'}</td>
-                        <td class="p-3 text-center"><span class="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded font-bold">${row.tableNo || '-'}</span></td>
-                        <td class="p-3 text-slate-600 dark:text-slate-300 leading-relaxed">${row.notes || '-'}</td>
-                        <td class="p-3 text-slate-400 whitespace-nowrap">${row.date || '-'}</td>
+                    <tr class="hover:bg-slate-50/50 dark:hover:bg-gray-800/40 transition-colors">
+                        <td class="p-3.5 font-bold text-title">${row.name || '-'}</td>
+                        <td class="p-3.5 font-mono text-muted" dir="ltr">${row.phone || '-'}</td>
+                        <td class="p-3.5 text-center"><span class="px-2.5 py-1 bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 rounded-lg font-bold">${row.tableNo || '-'}</span></td>
+                        <td class="p-3.5 text-body leading-relaxed">${row.notes || '-'}</td>
+                        <td class="p-3.5 text-muted whitespace-nowrap">${row.date || '-'}</td>
                     </tr>`;
             });
         }
 
+        // محرك البحث والفلترة المحدث والمصلح بالكامل
         function filterData() {
             const query = document.getElementById('search-input').value.toLowerCase().trim();
             const fromDateVal = document.getElementById('date-from').value;
             const toDateVal = document.getElementById('date-to').value;
 
-            const fromDate = fromDateVal ? new Date(fromDateVal) : null;
-            const toDate = toDateVal ? new Date(toDateVal) : null;
-            if(toDate) toDate.setHours(23, 59, 59, 999);
-
             const filtered = rawDashboardData.filter(item => {
-                const matchQuery = (item.name && item.name.toLowerCase().includes(query)) ||
-                                   (item.phone && item.phone.includes(query)) ||
-                                   (item.tableNo && item.tableNo.toString().includes(query));
+                // 1. فلترة نص البحث (الاسم، الهاتف، الطاولة)
+                const nameMatch = item.name ? String(item.name).toLowerCase().includes(query) : false;
+                const phoneMatch = item.phone ? String(item.phone).includes(query) : false;
+                const tableMatch = item.tableNo ? String(item.tableNo).includes(query) : false;
+                
+                const matchesQuery = query === '' || nameMatch || phoneMatch || tableMatch;
 
-                let matchDate = true;
-                if (item.date && (fromDate || toDate)) {
-                    const itemDate = new Date(item.date);
-                    if (!isNaN(itemDate.getTime())) {
-                        if (fromDate && itemDate < fromDate) matchDate = false;
-                        if (toDate && itemDate > toDate) matchDate = false;
+                // 2. فلترة التاريخ
+                let matchesDate = true;
+                if (item.date && (fromDateVal || toDateVal)) {
+                    const rowDate = new Date(item.date);
+                    if (!isNaN(rowDate.getTime())) {
+                        if (fromDateVal) {
+                            const fromDate = new Date(fromDateVal);
+                            fromDate.setHours(0, 0, 0, 0);
+                            if (rowDate < fromDate) matchesDate = false;
+                        }
+                        if (toDateVal) {
+                            const toDate = new Date(toDateVal);
+                            toDate.setHours(23, 59, 59, 999);
+                            if (rowDate > toDate) matchesDate = false;
+                        }
                     }
                 }
 
-                return matchQuery && matchDate;
+                return matchesQuery && matchesDate;
             });
 
+            document.getElementById('stat-total').innerText = filtered.length;
             renderTableData(filtered);
         }
 
@@ -428,7 +492,7 @@
         function triggerPrint() { window.print(); }
 
         function exportToExcel() {
-            if(!rawDashboardData || rawDashboardData.length === 0) return alert("لا توجد بيانات!");
+            if(!rawDashboardData || rawDashboardData.length === 0) return alert("لا توجد بيانات للتصدير!");
             const cleanData = rawDashboardData.map(item => ({
                 'الاسم': item.name || '',
                 'الهاتف': item.phone || '',
