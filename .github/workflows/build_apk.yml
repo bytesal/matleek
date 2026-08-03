@@ -1,4 +1,4 @@
-name: Build Android APK
+Name: Build Android APK
 
 on:
   push:
@@ -31,10 +31,15 @@ jobs:
       - name: Create Cordova Project & Build APK
         run: |
           cordova create build_app com.restaurant.app "RestaurantApp"
-          rm -rf build_app/www/*
-          cp index.html build_app/www/
           cd build_app
           cordova platform add android
+          
+          # رفع رقم الإصدار لـ 1.0.1 لتسهيل التحديث على التابلت
+          sed -i 's/version="1.0.0"/version="1.0.1"/g' config.xml
+          
+          # توجيه التطبيق لفتح موقع GitHub Pages المباشر بدلاً من الملف الداخلي
+          sed -i 's|<content src="index.html" />|<content src="https://bytesal.github.io/matleek/" />|g' config.xml
+          
           cordova build android --verbose
 
       - name: Upload APK
