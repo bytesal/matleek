@@ -1,34 +1,32 @@
-const CACHE_NAME = 'matleek-cache-v3';
+// Service Worker لتنظيف الكاش وإعادة التوجيه للموقع المباشر
 
-// 1. التثبيت والتفعيل المباشر بدون انتظار
 self.addEventListener('install', (event) => {
+  // التفعيل الفوري للـ Service Worker الجديد دون الانتظار
   self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
+    // حصر ومسح جميع النسخ المخزنة سابقاً في الكاش
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cache) => {
-          if (cache !== CACHE_NAME) {
-            // حذف أي ملفات قديمة مخزنة
-            return caches.delete(cache);
-          }
+          console.log('حذف الكاش القديم:', cache);
+          return caches.delete(cache);
         })
       );
-    }).then(() => self.clients.claim()) // استلام التحكم بالصفحة فوراً
+    }).then(() => {
+      // إجبار المتصفح/الـ WebView على استلام السيطرة فوراً
+      return self.clients.claim();
+    })
   );
 });
 
-// 2. استراتيجية Network-First: جلب أحدث نسخة من الشبكة دائماً
 self.addEventListener('fetch', (event) => {
+  // جلب البيانات دائماً بشكل مباشر من السيرفر (GitHub) وتجاوز الـ Cache
   event.respondWith(
-    fetch(event.request)
-      .then((networkResponse) => {
-        return networkResponse;
-      })
-      .catch(() => {
-        return caches.match(event.request);
-      })
+    fetch(event.request).catch(() => {
+      return caches.match(event.request);
+    })
   );
 });
