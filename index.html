@@ -245,7 +245,7 @@
                     </div>
                 </div>
 
-                <!-- شريط البحث والفلترة حسب التاريخ للتابلت والموبايل -->
+                <!-- شريط البحث والفلترة حسب التاريخ -->
                 <div class="ios-card p-4 no-print flex flex-col md:flex-row gap-3 items-center">
                     <div class="w-full md:flex-1 relative">
                         <input type="text" id="search-input" oninput="filterData()" placeholder="🔍 بحث باسم الزبون، رقم الهاتف، أو الطاولة..." class="w-full ios-input p-3 pr-4 text-xs outline-none font-medium">
@@ -310,30 +310,35 @@
         let rawDashboardData = [];
         let isDashboardUnlocked = false;
 
+        // فحص التحديث التلقائي الفوري عبر Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js').then((reg) => {
+                // إجبار المتصفح على التحقق من التحديثات فور فتح التطبيق
+                reg.update();
+
+                reg.onupdatefound = () => {
+                    const installingWorker = reg.installing;
+                    installingWorker.onstatechange = () => {
+                        if (installingWorker.state === 'installed') {
+                            if (navigator.serviceWorker.controller) {
+                                // إظهار شريط التحديث أو إعادة التحميل الفوري
+                                document.getElementById('update-banner').classList.remove('hidden');
+                            }
+                        }
+                    };
+                };
+            });
+        }
+
         // عند فتح الصفحة: فحص الرابط التلقائي لإتاحة الدخول المباشر للمدير
         window.addEventListener('load', () => {
-            // كشف معلمات الرابط URL
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('view') === 'dashboard') {
                 switchTab('tab-dashboard');
             }
-
-            // دعم التحديث المباشر PWA
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('/sw.js').then(reg => {
-                    reg.onupdatefound = () => {
-                        const installingWorker = reg.installing;
-                        installingWorker.onstatechange = () => {
-                            if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                document.getElementById('update-banner').classList.remove('hidden');
-                            }
-                        };
-                    };
-                });
-            }
         });
 
-        // قفل الداشبورد أوتوماتيكياً عند إغلاق الشاشة أو الخروج من التطبيق
+        // قفل الداشبورد أوتوماتيكياً عند إغلاق الشاشة
         document.addEventListener('visibilitychange', () => {
             if (document.hidden && isDashboardUnlocked) {
                 lockDashboardNow();
@@ -341,7 +346,6 @@
         });
 
         function switchTab(tabId) {
-            // قفل الداشبورد أوتوماتيكياً عند الانتقال لتاب الإدخال
             if (tabId !== 'tab-dashboard' && isDashboardUnlocked) {
                 lockDashboardNow();
             }
@@ -372,7 +376,6 @@
 
         function unlockDashboard() {
             const inputVal = document.getElementById('dashboard-passcode').value.trim();
-            // الدخول المباشر برقم السر 2024 فقط
             if (inputVal === "2024") {
                 isDashboardUnlocked = true;
                 document.getElementById('dashboard-lock').classList.add('hidden');
