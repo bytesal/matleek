@@ -8,162 +8,178 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <!-- XLSX Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <!-- Font Cairo -->
+    <!-- System Fonts & Lucide Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
     
     <style>
         :root {
-            --bg-color: #f1f5f9;
-            --text-main: #0f172a;
-            --text-sub: #475569;
-            --glass-bg: rgba(255, 255, 255, 0.65);
-            --glass-border: rgba(255, 255, 255, 0.8);
-            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
-            --input-bg: rgba(255, 255, 255, 0.8);
-        }
-
-        body.dark-mode {
-            --bg-color: #0b0f17;
-            --text-main: #f8fafc;
-            --text-sub: #94a3b8;
-            --glass-bg: rgba(18, 24, 38, 0.7);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            --input-bg: rgba(15, 23, 42, 0.6);
+            --glass-bg: rgba(255, 255, 255, 0.12);
+            --glass-card: rgba(30, 40, 30, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.35);
+            --glass-border-light: rgba(255, 255, 255, 0.55);
+            --glass-active: rgba(255, 255, 255, 0.22);
+            --text-primary: #ffffff;
         }
 
         body { 
-            font-family: 'Cairo', sans-serif; 
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            transition: background-color 0.3s ease, color 0.3s ease;
+            font-family: -apple-system, BlinkMacSystemFont, 'Cairo', 'SF Pro Display', sans-serif; 
+            /* خلفية مطعم دافئة وراقية بدلاً من صورة الغابة */
+            background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.55)), 
+                        url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=2000&auto=format&fit=crop') center/cover fixed no-repeat;
+            color: var(--text-primary);
+            min-height: 100vh;
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* Liquid Glass Card Style */
-        .liquid-glass {
-            background: var(--glass-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+        /* Ultra-Liquid Glass Card */
+        .ultra-glass-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(45px) saturate(200%);
+            -webkit-backdrop-filter: blur(45px) saturate(200%);
             border: 1px solid var(--glass-border);
-            box-shadow: var(--glass-shadow);
-            border-radius: 20px;
+            box-shadow: 
+                0 30px 60px rgba(0, 0, 0, 0.4),
+                inset 0 1px 2px rgba(255, 255, 255, 0.5),
+                inset 0 -1px 2px rgba(0, 0, 0, 0.2);
+            border-radius: 36px;
         }
 
-        .liquid-input {
-            background: var(--input-bg);
-            border: 1px solid var(--glass-border);
-            color: var(--text-main);
-            border-radius: 12px;
+        .glass-pill-active {
+            background: rgba(255, 255, 255, 0.22);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            box-shadow: 
+                0 8px 24px rgba(0, 0, 0, 0.25),
+                inset 0 1px 1px rgba(255, 255, 255, 0.6);
+            border-radius: 9999px;
+        }
+
+        .glass-button {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 9999px;
+            color: #ffffff;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.3);
+        }
+
+        .glass-button:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.6);
+            transform: translateY(-1px);
+        }
+
+        .glass-input {
+            background: rgba(0, 0, 0, 0.25);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #ffffff;
             outline: none;
             transition: all 0.2s ease;
         }
-
-        .liquid-input:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+        .glass-input:focus {
+            border-color: rgba(255, 255, 255, 0.7);
+            background: rgba(0, 0, 0, 0.4);
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.15);
         }
-
-        .btn-liquid-primary {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
-            color: #ffffff;
-            font-weight: 700;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
-            transition: all 0.2s ease;
-        }
-        .btn-liquid-primary:active { transform: scale(0.98); }
 
         .numpad-key {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            color: var(--text-main);
-            font-size: 1.5rem;
-            font-weight: 800;
-            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+            font-size: 1.3rem;
+            font-weight: 700;
+            border-radius: 9999px;
             transition: all 0.15s ease;
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4);
         }
         .numpad-key:active {
-            background: #2563eb;
-            color: #ffffff;
-            border-color: #2563eb;
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(0.95);
         }
 
         @media print {
             .no-print, nav, #numpad-modal { display: none !important; }
             body { background: white !important; color: black !important; }
-            .liquid-glass { border: none !important; box-shadow: none !important; background: white !important; }
+            .ultra-glass-card { border: none !important; box-shadow: none !important; background: white !important; }
             #dashboard-content { display: block !important; }
             table { width: 100% !important; border-collapse: collapse !important; }
-            th, td { border: 1px solid #ddd !important; padding: 8px !important; }
+            th, td { border: 1px solid #ddd !important; padding: 8px !important; color: black !important; }
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col antialiased">
+<body class="min-h-screen flex flex-col justify-between antialiased selection:bg-white/30">
 
-    <!-- شريط التنقل (Navbar Glass) -->
-    <nav class="no-print sticky top-0 z-30 liquid-glass rounded-none border-x-0 border-t-0 px-6 py-3.5 mb-4">
-        <div class="max-w-6xl mx-auto flex justify-between items-center">
+    <!-- Navbar -->
+    <nav class="no-print sticky top-0 z-30 backdrop-blur-2xl bg-black/20 border-b border-white/20 px-6 py-4">
+        <div class="max-w-5xl mx-auto flex justify-between items-center">
             
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-white font-extrabold text-xl shadow-md">
-                    M
+                <div class="w-10 h-10 glass-pill-active flex items-center justify-center font-black text-lg text-white">
+                    <i data-lucide="utensils" class="w-5 h-5"></i>
                 </div>
                 <div>
-                    <h1 class="text-base font-extrabold leading-tight">Matleek POS</h1>
-                    <p class="text-[11px] text-blue-600 dark:text-blue-400 font-bold">نظام الطاولات والاستبيان</p>
+                    <h1 class="text-base font-bold tracking-wide text-white drop-shadow-sm">Matleek POS</h1>
+                    <p class="text-[11px] text-white/70 font-medium">نظام إدخال الطاولات والتقارير</p>
                 </div>
             </div>
 
-            <div class="flex items-center gap-3">
-                <div class="flex p-1 bg-slate-200/50 dark:bg-slate-800/50 rounded-xl text-xs font-bold border border-white/20">
-                    <button onclick="switchTab('tab-live')" id="btn-tab-live" class="nav-btn px-5 py-2 rounded-lg bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm transition">إدخال الطاولات</button>
-                    <button onclick="switchTab('tab-dashboard')" id="btn-tab-dashboard" class="nav-btn px-5 py-2 rounded-lg text-slate-500 dark:text-slate-400 transition">التقارير والداشبورد 🔐</button>
+            <div class="flex items-center gap-2">
+                <div class="flex p-1.5 ultra-glass-card rounded-full text-xs font-semibold gap-1">
+                    <button onclick="switchTab('tab-live')" id="btn-tab-live" class="nav-btn px-6 py-2 rounded-full glass-pill-active text-white transition flex items-center gap-2">
+                        <i data-lucide="layout-dashboard" class="w-4 h-4"></i> إدخال الطاولات
+                    </button>
+                    <button onclick="switchTab('tab-dashboard')" id="btn-tab-dashboard" class="nav-btn px-6 py-2 rounded-full text-white/70 hover:text-white transition flex items-center gap-2">
+                        <i data-lucide="lock" class="w-4 h-4"></i> التقارير والداشبورد
+                    </button>
                 </div>
-
-                <button onclick="toggleTheme()" id="theme-btn" class="p-2.5 liquid-glass rounded-xl text-sm font-bold">
-                    🌙
-                </button>
             </div>
 
         </div>
     </nav>
 
-    <main class="max-w-6xl mx-auto p-4 md:p-6 flex-1 w-full">
+    <!-- Content -->
+    <main class="max-w-5xl mx-auto p-4 md:p-6 flex-1 w-full flex flex-col justify-center my-auto">
 
         <!-- 1. واجهة إدخال الطاولات -->
-        <section id="tab-live" class="tab-content">
-            <div class="liquid-glass p-6 md:p-8 max-w-xl mx-auto space-y-6">
-                <div class="border-b border-slate-200 dark:border-slate-800 pb-4">
-                    <h2 class="text-lg font-black">تسجيل طاولة جديدة</h2>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">أدخل التفاصيل ليتم مزامنتها مباشرة مع الخادم</p>
+        <section id="tab-live" class="tab-content w-full">
+            <div class="ultra-glass-card p-8 md:p-10 max-w-lg mx-auto space-y-6">
+                
+                <div class="text-center space-y-1 pb-2">
+                    <h2 class="text-2xl font-extrabold tracking-wide text-white drop-shadow">تسجيل طاولة جديدة</h2>
+                    <p class="text-xs text-white/70">أدخل البيانات ليتم المزامنة مباشرة مع السيرفر</p>
                 </div>
 
                 <form onsubmit="submitLiveForm(event)" class="space-y-4">
                     
                     <div>
-                        <label class="block text-xs font-extrabold mb-1.5">اسم الزبون <span class="text-rose-500">*</span></label>
-                        <input type="text" id="live-name" required placeholder="أدخل اسم الزبون..." class="w-full liquid-input p-3 text-sm font-semibold">
+                        <label class="block text-xs font-semibold mb-2 mr-2 text-white/80">اسم الزبون <span class="text-rose-300">*</span></label>
+                        <input type="text" id="live-name" required placeholder="أدخل اسم الزبون..." class="w-full glass-input p-3.5 rounded-2xl text-sm font-medium">
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-extrabold mb-1.5">رقم الهاتف <span class="text-rose-500">*</span></label>
-                            <input type="text" id="live-phone" readonly onclick="openNumpad('live-phone', 'رقم الهاتف')" required placeholder="انقر للإدخال 📱" class="w-full liquid-input p-3 text-sm font-black text-center cursor-pointer text-blue-600 dark:text-blue-400">
+                            <label class="block text-xs font-semibold mb-2 mr-2 text-white/80">رقم الهاتف <span class="text-rose-300">*</span></label>
+                            <input type="text" id="live-phone" readonly onclick="openNumpad('live-phone', 'رقم الهاتف')" required placeholder="انقر للإدخال 📱" class="w-full glass-input p-3.5 rounded-2xl text-sm font-bold text-center cursor-pointer text-white">
                         </div>
 
                         <div>
-                            <label class="block text-xs font-extrabold mb-1.5">رقم الطاولة <span class="text-rose-500">*</span></label>
-                            <input type="text" id="live-table" readonly onclick="openNumpad('live-table', 'رقم الطاولة')" required placeholder="انقر للإدخال 🍽️" class="w-full liquid-input p-3 text-sm font-black text-center cursor-pointer text-blue-600 dark:text-blue-400">
+                            <label class="block text-xs font-semibold mb-2 mr-2 text-white/80">رقم الطاولة <span class="text-rose-300">*</span></label>
+                            <input type="text" id="live-table" readonly onclick="openNumpad('live-table', 'رقم الطاولة')" required placeholder="انقر للإدخال 🍽️" class="w-full glass-input p-3.5 rounded-2xl text-sm font-bold text-center cursor-pointer text-white">
                         </div>
                     </div>
 
                     <div>
-                        <label class="block text-xs font-extrabold mb-1.5">ملاحظات خاصة</label>
-                        <textarea id="live-notes" rows="3" placeholder="أية طلبات أو ملاحظات إضافية..." class="w-full liquid-input p-3 text-sm font-medium"></textarea>
+                        <label class="block text-xs font-semibold mb-2 mr-2 text-white/80">ملاحظات خاصة</label>
+                        <textarea id="live-notes" rows="3" placeholder="أية طلبات أو ملاحظات إضافية..." class="w-full glass-input p-3.5 rounded-2xl text-sm font-medium"></textarea>
                     </div>
 
-                    <button type="submit" id="btn-live-submit" class="btn-liquid-primary w-full py-3.5 text-sm mt-2">
+                    <button type="submit" id="btn-live-submit" class="glass-button w-full py-4 text-sm font-bold mt-4 shadow-lg active:scale-[0.98]">
                         حفظ وإرسال الطاولة 🚀
                     </button>
 
@@ -172,58 +188,43 @@
         </section>
 
         <!-- 2. قسم الداشبورد والتقارير -->
-        <section id="tab-dashboard" class="tab-content hidden space-y-5">
+        <section id="tab-dashboard" class="tab-content hidden space-y-6 w-full">
             
             <!-- قفل الحماية -->
-            <div id="dashboard-lock" class="liquid-glass p-8 max-w-sm mx-auto text-center space-y-4 no-print my-12">
-                <div class="w-14 h-14 bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-2xl flex items-center justify-center mx-auto text-2xl font-bold">
-                    🔒
+            <div id="dashboard-lock" class="ultra-glass-card p-8 max-w-sm mx-auto text-center space-y-5 no-print my-8">
+                <div class="w-16 h-16 glass-pill-active rounded-full flex items-center justify-center mx-auto text-white">
+                    <i data-lucide="shield-check" class="w-8 h-8"></i>
                 </div>
                 <div>
-                    <h3 class="text-base font-black">حماية التقارير</h3>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">يرجى إدخال رمز المرور لعرض البيانات</p>
+                    <h3 class="text-lg font-bold text-white">حماية التقارير</h3>
+                    <p class="text-xs text-white/70 mt-1">يرجى إدخال رمز المرور لعرض البيانات</p>
                 </div>
-                <input type="password" id="dashboard-passcode" placeholder="••••" class="w-full liquid-input p-3 text-center text-lg font-black tracking-widest">
-                <button onclick="unlockDashboard()" class="btn-liquid-primary w-full py-3 text-xs">تأكيد الدخول</button>
+                <input type="password" id="dashboard-passcode" placeholder="••••" class="w-full glass-input p-3.5 rounded-2xl text-center text-lg font-bold tracking-widest">
+                <button onclick="unlockDashboard()" class="glass-button w-full py-3.5 text-xs font-bold">تأكيد الدخول</button>
             </div>
 
             <!-- محتوى السجلات -->
             <div id="dashboard-content" class="hidden space-y-5">
                 
-                <div class="liquid-glass p-5 no-print flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="ultra-glass-card p-6 no-print flex flex-col md:flex-row justify-between items-center gap-4">
                     <div>
-                        <h2 class="text-base font-black">لوحة التحكم والسجلات</h2>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 font-bold mt-0.5">عدد السجلات المعروضة: <span id="stat-total" class="text-blue-600 dark:text-blue-400 font-black">0</span></p>
+                        <h2 class="text-lg font-bold text-white">لوحة التحكم والسجلات</h2>
+                        <p class="text-xs text-white/70 mt-0.5">إجمالي السجلات: <span id="stat-total" class="text-white font-extrabold">0</span></p>
                     </div>
 
                     <div class="flex flex-wrap items-center gap-2">
-                        <button onclick="lockDashboardNow()" class="px-3.5 py-2 text-xs font-extrabold text-rose-500 bg-rose-500/10 rounded-xl hover:bg-rose-500/20 transition">قفل</button>
-                        <button onclick="loadDashboardData()" class="px-3.5 py-2 text-xs font-extrabold liquid-glass">تحديث 🔄</button>
-                        <button onclick="exportToExcel()" class="px-3.5 py-2 text-xs font-extrabold bg-emerald-600 text-white rounded-xl shadow-md">Excel 📊</button>
-                        <button onclick="triggerPrint()" class="btn-liquid-primary px-4 py-2 text-xs">طباعة 🖨️</button>
+                        <button onclick="lockDashboardNow()" class="px-4 py-2 text-xs font-bold text-rose-300 bg-rose-500/20 border border-rose-400/30 rounded-full hover:bg-rose-500/30 transition">قفل</button>
+                        <button onclick="loadDashboardData()" class="px-4 py-2 text-xs font-bold glass-button">تحديث 🔄</button>
+                        <button onclick="exportToExcel()" class="px-4 py-2 text-xs font-bold bg-emerald-600/50 border border-emerald-400/40 text-white rounded-full hover:bg-emerald-600/70">Excel 📊</button>
+                        <button onclick="triggerPrint()" class="glass-button px-5 py-2 text-xs font-bold">طباعة 🖨️</button>
                     </div>
                 </div>
 
-                <!-- شريط البحث والتصفية المتطور -->
-                <div class="liquid-glass p-4 no-print flex flex-col md:flex-row gap-3 items-center">
-                    <div class="flex-1 w-full">
-                        <input type="text" id="search-input" oninput="filterData()" placeholder="🔍 بحث سريع باسم الزبون، رقم الهاتف، أو رقم الطاولة..." class="w-full liquid-input p-3 text-xs font-bold">
-                    </div>
-                    
-                    <div class="flex items-center gap-2 text-xs w-full md:w-auto">
-                        <span class="font-extrabold text-slate-500">من:</span>
-                        <input type="date" id="date-from" onchange="filterData()" class="liquid-input p-2 font-bold">
-                        <span class="font-extrabold text-slate-500">إلى:</span>
-                        <input type="date" id="date-to" onchange="filterData()" class="liquid-input p-2 font-bold">
-                        <button onclick="clearDateFilter()" title="إعادة ضبط" class="px-3 py-2 liquid-glass font-black text-rose-500">✖</button>
-                    </div>
-                </div>
-
-                <!-- الجدول -->
-                <div class="liquid-glass overflow-hidden">
+                <!-- الجدول الزجاجي -->
+                <div class="ultra-glass-card overflow-hidden p-3">
                     <div class="overflow-x-auto">
                         <table class="w-full text-right text-xs border-collapse">
-                            <thead class="bg-slate-500/5 border-b border-slate-200 dark:border-slate-800 text-slate-500 font-black">
+                            <thead class="border-b border-white/20 text-white/70 font-bold">
                                 <tr>
                                     <th class="p-4">الزبون</th>
                                     <th class="p-4">الهاتف</th>
@@ -232,9 +233,9 @@
                                     <th class="p-4">التاريخ والوقت</th>
                                 </tr>
                             </thead>
-                            <tbody id="dashboard-table-body" class="divide-y divide-slate-200/40 dark:divide-slate-800/40 font-semibold">
+                            <tbody id="dashboard-table-body" class="divide-y divide-white/10 font-medium text-white">
                                 <tr>
-                                    <td colspan="5" class="p-8 text-center text-slate-400">جاري تحميل السجلات...</td>
+                                    <td colspan="5" class="p-8 text-center text-white/50">جاري تحميل السجلات...</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -246,64 +247,50 @@
 
     </main>
 
-    <!-- Modal لوحة الأرقام الزجاجية (Numpad Glass) -->
-    <div id="numpad-modal" class="fixed inset-0 bg-slate-950/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="liquid-glass p-6 w-full max-w-xs space-y-4 shadow-2xl relative animate-in fade-in zoom-in-95 duration-150 border-white/30">
+    <!-- Modal لوحة الأرقام الزجاجية -->
+    <div id="numpad-modal" class="fixed inset-0 bg-black/50 backdrop-blur-lg z-50 flex items-center justify-center p-4 hidden">
+        <div class="ultra-glass-card p-6 w-full max-w-xs space-y-5 relative shadow-2xl">
             
-            <div class="flex justify-between items-center border-b border-slate-200 dark:border-slate-800 pb-3">
-                <h3 id="numpad-title" class="text-sm font-black">إدخال رقم</h3>
-                <button type="button" onclick="closeNumpad()" class="text-slate-400 hover:text-rose-500 font-bold text-lg">✕</button>
+            <div class="flex justify-between items-center border-b border-white/20 pb-3">
+                <h3 id="numpad-title" class="text-sm font-bold text-white">إدخال رقم</h3>
+                <button type="button" onclick="closeNumpad()" class="text-white/70 hover:text-white font-bold text-lg">✕</button>
             </div>
 
             <!-- شاشة الرقم -->
-            <div id="numpad-display" class="w-full p-3 liquid-input text-center text-2xl font-black text-blue-600 dark:text-blue-400 tracking-wider min-h-[50px] flex items-center justify-center bg-blue-500/5">
+            <div id="numpad-display" class="w-full p-3 glass-input rounded-2xl text-center text-2xl font-black text-white tracking-widest min-h-[52px] flex items-center justify-center bg-black/20">
             </div>
 
-            <!-- الأزرار -->
-            <div class="grid grid-cols-3 gap-2.5" dir="ltr">
-                <button type="button" onclick="pressNumpadKey('1')" class="numpad-key py-3">1</button>
-                <button type="button" onclick="pressNumpadKey('2')" class="numpad-key py-3">2</button>
-                <button type="button" onclick="pressNumpadKey('3')" class="numpad-key py-3">3</button>
-                <button type="button" onclick="pressNumpadKey('4')" class="numpad-key py-3">4</button>
-                <button type="button" onclick="pressNumpadKey('5')" class="numpad-key py-3">5</button>
-                <button type="button" onclick="pressNumpadKey('6')" class="numpad-key py-3">6</button>
-                <button type="button" onclick="pressNumpadKey('7')" class="numpad-key py-3">7</button>
-                <button type="button" onclick="pressNumpadKey('8')" class="numpad-key py-3">8</button>
-                <button type="button" onclick="pressNumpadKey('9')" class="numpad-key py-3">9</button>
-                <button type="button" onclick="clearNumpad()" class="numpad-key py-3 text-xs text-rose-500">مسح</button>
-                <button type="button" onclick="pressNumpadKey('0')" class="numpad-key py-3">0</button>
-                <button type="button" onclick="deleteNumpadKey()" class="numpad-key py-3 text-amber-500">⌫</button>
+            <!-- الأزرار الدائرية الزجاجية -->
+            <div class="grid grid-cols-3 gap-3" dir="ltr">
+                <button type="button" onclick="pressNumpadKey('1')" class="numpad-key py-3.5">1</button>
+                <button type="button" onclick="pressNumpadKey('2')" class="numpad-key py-3.5">2</button>
+                <button type="button" onclick="pressNumpadKey('3')" class="numpad-key py-3.5">3</button>
+                <button type="button" onclick="pressNumpadKey('4')" class="numpad-key py-3.5">4</button>
+                <button type="button" onclick="pressNumpadKey('5')" class="numpad-key py-3.5">5</button>
+                <button type="button" onclick="pressNumpadKey('6')" class="numpad-key py-3.5">6</button>
+                <button type="button" onclick="pressNumpadKey('7')" class="numpad-key py-3.5">7</button>
+                <button type="button" onclick="pressNumpadKey('8')" class="numpad-key py-3.5">8</button>
+                <button type="button" onclick="pressNumpadKey('9')" class="numpad-key py-3.5">9</button>
+                <button type="button" onclick="clearNumpad()" class="numpad-key py-3.5 text-xs text-rose-300">مسح</button>
+                <button type="button" onclick="pressNumpadKey('0')" class="numpad-key py-3.5">0</button>
+                <button type="button" onclick="deleteNumpadKey()" class="numpad-key py-3.5 text-amber-300">⌫</button>
             </div>
 
-            <button type="button" onclick="closeNumpad()" class="btn-liquid-primary w-full py-3 text-xs mt-2">
-                تأكيد الرقم ✔️
+            <!-- زر التأكيد -->
+            <button type="button" onclick="closeNumpad()" class="glass-button w-full py-3.5 text-sm font-bold text-white">
+                تأكيد (Dismiss)
             </button>
         </div>
     </div>
 
     <script>
+        lucide.createIcons();
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzybaVrQUirtdNLIxjlQvdUjIfPniJOVijZ8KeNx_MFYWToIho14EjM4U5XPIUTrH6e/exec";
 
         let rawDashboardData = [];
         let isDashboardUnlocked = false;
         let currentTargetInputId = null;
 
-        // إدارة الثيمات
-        function toggleTheme() {
-            const isDark = document.body.classList.toggle('dark-mode');
-            document.getElementById('theme-btn').innerText = isDark ? '☀️' : '🌙';
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        }
-
-        if (localStorage.getItem('theme') === 'dark') {
-            document.body.classList.add('dark-mode');
-            window.addEventListener('DOMContentLoaded', () => {
-                const themeBtn = document.getElementById('theme-btn');
-                if(themeBtn) themeBtn.innerText = '☀️';
-            });
-        }
-
-        // لوحة الأرقام التفاعلية
         function openNumpad(inputId, title) {
             currentTargetInputId = inputId;
             document.getElementById('numpad-title').innerText = title;
@@ -337,7 +324,6 @@
             document.getElementById('numpad-display').innerText = '';
         }
 
-        // التنقل بين التبويبات
         function switchTab(tabId) {
             if (tabId !== 'tab-dashboard' && isDashboardUnlocked) lockDashboardNow();
 
@@ -345,18 +331,17 @@
             document.getElementById(tabId).classList.remove('hidden');
 
             document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('bg-white', 'dark:bg-slate-700', 'text-blue-600', 'dark:text-blue-400', 'shadow-sm');
-                btn.classList.add('text-slate-500', 'dark:text-slate-400');
+                btn.classList.remove('glass-pill-active', 'text-white');
+                btn.classList.add('text-white/70');
             });
 
             const activeBtn = document.getElementById(`btn-${tabId}`);
             if (activeBtn) {
-                activeBtn.classList.remove('text-slate-500', 'dark:text-slate-400');
-                activeBtn.classList.add('bg-white', 'dark:bg-slate-700', 'text-blue-600', 'dark:text-blue-400', 'shadow-sm');
+                activeBtn.classList.remove('text-white/70');
+                activeBtn.classList.add('glass-pill-active', 'text-white');
             }
         }
 
-        // الداشبورد والحماية
         function unlockDashboard() {
             if (document.getElementById('dashboard-passcode').value.trim() === "2024") {
                 isDashboardUnlocked = true;
@@ -375,7 +360,6 @@
             document.getElementById('dashboard-lock').classList.remove('hidden');
         }
 
-        // إرسال البيانات
         function submitLiveForm(e) {
             e.preventDefault();
             const btn = document.getElementById('btn-live-submit');
@@ -406,10 +390,9 @@
             });
         }
 
-        // جلب البيانات
         function loadDashboardData() {
             const tbody = document.getElementById('dashboard-table-body');
-            tbody.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-slate-400">جاري جلب البيانات...</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-white/50">جاري جلب البيانات...</td></tr>';
 
             fetch(`${SCRIPT_URL}?action=getDashboardData`)
             .then(res => res.json())
@@ -419,7 +402,7 @@
                 renderTableData(rawDashboardData);
             })
             .catch(() => {
-                tbody.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-rose-500 font-bold">فشل جلب البيانات من الخادم</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-rose-300 font-bold">فشل جلب البيانات من الخادم</td></tr>';
             });
         }
 
@@ -428,68 +411,20 @@
             tbody.innerHTML = '';
             
             if(!data || data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-slate-400 font-bold">لا توجد سجلات مطابقة للبحث</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-white/50 font-bold">لا توجد سجلات حالياً</td></tr>';
                 return;
             }
 
             data.forEach((row) => {
                 tbody.innerHTML += `
-                    <tr class="hover:bg-slate-500/5 transition-colors">
-                        <td class="p-4 font-extrabold">${row.name || '-'}</td>
-                        <td class="p-4 font-mono text-slate-500 dark:text-slate-400" dir="ltr">${row.phone || '-'}</td>
-                        <td class="p-4 text-center"><span class="px-3 py-1 bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-lg font-black">${row.tableNo || '-'}</span></td>
-                        <td class="p-4 leading-relaxed">${row.notes || '-'}</td>
-                        <td class="p-4 text-slate-400 text-xs whitespace-nowrap">${row.date || '-'}</td>
+                    <tr class="hover:bg-white/10 transition-colors">
+                        <td class="p-4 font-bold text-white">${row.name || '-'}</td>
+                        <td class="p-4 font-mono text-white/80" dir="ltr">${row.phone || '-'}</td>
+                        <td class="p-4 text-center"><span class="px-3 py-1 glass-pill-active rounded-full font-bold text-white">${row.tableNo || '-'}</span></td>
+                        <td class="p-4 leading-relaxed text-white/90">${row.notes || '-'}</td>
+                        <td class="p-4 text-white/60 text-xs whitespace-nowrap">${row.date || '-'}</td>
                     </tr>`;
             });
-        }
-
-        // محرك البحث والفلترة الدقيق والمحدث
-        function filterData() {
-            const query = document.getElementById('search-input').value.toLowerCase().trim();
-            const fromDateVal = document.getElementById('date-from').value;
-            const toDateVal = document.getElementById('date-to').value;
-
-            const filtered = rawDashboardData.filter(item => {
-                // تحويل كل القيم إلى نصوص للبحث الآمن
-                const strName = item.name ? String(item.name).toLowerCase() : '';
-                const strPhone = item.phone ? String(item.phone).toLowerCase() : '';
-                const strTable = item.tableNo ? String(item.tableNo).toLowerCase() : '';
-
-                const matchesQuery = query === '' || 
-                                     strName.includes(query) || 
-                                     strPhone.includes(query) || 
-                                     strTable.includes(query);
-
-                // مقارنة التواريخ بأمان
-                let matchesDate = true;
-                if (item.date && (fromDateVal || toDateVal)) {
-                    const parsedItemDate = new Date(item.date);
-                    if (!isNaN(parsedItemDate.getTime())) {
-                        if (fromDateVal) {
-                            const fromDate = new Date(fromDateVal);
-                            fromDate.setHours(0, 0, 0, 0);
-                            if (parsedItemDate < fromDate) matchesDate = false;
-                        }
-                        if (toDateVal) {
-                            const toDate = new Date(toDateVal);
-                            toDate.setHours(23, 59, 59, 999);
-                            if (parsedItemDate > toDate) matchesDate = false;
-                        }
-                    }
-                }
-
-                return matchesQuery && matchesDate;
-            });
-
-            document.getElementById('stat-total').innerText = filtered.length;
-            renderTableData(filtered);
-        }
-
-        function clearDateFilter() {
-            document.getElementById('date-from').value = '';
-            document.getElementById('date-to').value = '';
-            filterData();
         }
 
         function triggerPrint() { window.print(); }
