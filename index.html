@@ -83,6 +83,11 @@
             transform: translateY(-1px);
         }
 
+        .glass-button:disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
         .glass-input {
             background: rgba(0, 0, 0, 0.25);
             backdrop-filter: blur(20px);
@@ -96,6 +101,9 @@
             background: rgba(0, 0, 0, 0.4);
             box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.15);
         }
+        .glass-input:read-only {
+            cursor: pointer;
+        }
 
         .numpad-key {
             background: rgba(255, 255, 255, 0.15);
@@ -107,10 +115,15 @@
             border-radius: 9999px;
             transition: all 0.15s ease;
             box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4);
+            user-select: none;
         }
         .numpad-key:active {
             background: rgba(255, 255, 255, 0.4);
             transform: scale(0.95);
+        }
+        .numpad-key:disabled {
+            opacity: 0.3;
+            pointer-events: none;
         }
 
         /* Ambient Glow animation for Thank You Screen */
@@ -131,8 +144,55 @@
             animation: shrink-progress 5s linear forwards;
         }
 
+        /* Toast Notifications - Glassmorphic */
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 999999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            width: 90%;
+            max-width: 420px;
+            pointer-events: none;
+        }
+        .toast-item {
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 20px;
+            padding: 16px 24px;
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.3);
+            pointer-events: auto;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateY(20px);
+            opacity: 0;
+            width: 100%;
+        }
+        .toast-item.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .toast-item.success {
+            border-color: rgba(52, 211, 153, 0.6);
+        }
+        .toast-item.error {
+            border-color: rgba(251, 113, 133, 0.6);
+        }
+        .toast-item.warning {
+            border-color: rgba(251, 191, 36, 0.6);
+        }
+
         @media print {
-            .no-print, nav, #numpad-modal, #thank-you-modal { display: none !important; }
+            .no-print, nav, #numpad-modal, #thank-you-modal, .toast-container { display: none !important; }
             body { background: white !important; color: black !important; }
             .ultra-glass-card { border: none !important; box-shadow: none !important; background: white !important; }
             #dashboard-content { display: block !important; }
@@ -148,6 +208,9 @@
             يرجى تفعيل JavaScript في المتصفح لاستخدام نظام Matleek POS بشكل صحيح.
         </p>
     </noscript>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
 
     <!-- Navbar -->
     <nav class="no-print sticky top-0 z-30 backdrop-blur-2xl bg-black/20 border-b border-white/20 px-6 py-4">
@@ -189,7 +252,7 @@
                     <p class="text-xs text-white/70">أدخل البيانات ليتم المزامنة مباشرة مع السيرفر</p>
                 </div>
 
-                <form onsubmit="submitLiveForm(event)" class="space-y-4">
+                <form onsubmit="submitLiveForm(event)" class="space-y-4" novalidate>
                     
                     <div>
                         <label for="live-name" class="block text-xs font-semibold mb-2 mr-2 text-white/80">اسم الزبون <span class="text-rose-300">*</span></label>
@@ -199,12 +262,12 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label for="live-phone" class="block text-xs font-semibold mb-2 mr-2 text-white/80">رقم الهاتف <span class="text-rose-300">*</span></label>
-                            <input type="text" id="live-phone" name="live-phone" readonly onclick="openNumpad('live-phone', 'رقم الهاتف')" required placeholder="انقر للإدخال 📱" autocomplete="tel" inputmode="numeric" class="w-full glass-input p-3.5 rounded-2xl text-sm font-bold text-center cursor-pointer text-white">
+                            <input type="text" id="live-phone" name="live-phone" readonly onclick="openNumpad('live-phone', 'رقم الهاتف', 10)" required placeholder="انقر للإدخال 📱" autocomplete="tel" inputmode="numeric" class="w-full glass-input p-3.5 rounded-2xl text-sm font-bold text-center cursor-pointer text-white">
                         </div>
 
                         <div>
                             <label for="live-table" class="block text-xs font-semibold mb-2 mr-2 text-white/80">رقم الطاولة <span class="text-rose-300">*</span></label>
-                            <input type="text" id="live-table" name="live-table" readonly onclick="openNumpad('live-table', 'رقم الطاولة')" required placeholder="انقر للإدخال 🍽️" inputmode="numeric" class="w-full glass-input p-3.5 rounded-2xl text-sm font-bold text-center cursor-pointer text-white">
+                            <input type="text" id="live-table" name="live-table" readonly onclick="openNumpad('live-table', 'رقم الطاولة', 4)" required placeholder="انقر للإدخال 🍽️" inputmode="numeric" class="w-full glass-input p-3.5 rounded-2xl text-sm font-bold text-center cursor-pointer text-white">
                         </div>
                     </div>
 
@@ -304,11 +367,11 @@
                 </p>
             </div>
 
-            <!-- Reset Timer info -->
-            <div class="relative z-10 pt-2 flex flex-col items-center gap-2">
+            <!-- Reset Timer info with Skip button -->
+            <div class="relative z-10 pt-2 flex flex-col items-center gap-3">
                 <p class="text-[11px] text-white/60 font-medium">سيتم إعادة التصفير تلقائياً خلال <span id="reset-counter" class="text-amber-300 font-bold" aria-live="polite">5</span> ثوانٍ</p>
-                <button type="button" onclick="closeThankYouModal()" aria-label="إغلاق الآن" class="glass-button px-6 py-2 text-xs font-bold text-white/90 hover:text-white">
-                    إغلاق الآن ✕
+                <button type="button" onclick="closeThankYouModal()" aria-label="تخطي وإغلاق الآن" class="glass-button px-8 py-2.5 text-sm font-bold text-white/90 hover:text-white border-amber-300/40">
+                    تخطي ⏭️
                 </button>
             </div>
 
@@ -350,37 +413,79 @@
             </div>
 
             <!-- زر التأكيد -->
-            <button type="button" onclick="closeNumpad()" class="glass-button w-full py-3.5 text-sm font-bold text-white">
-                تأكيد (Dismiss)
+            <button type="button" onclick="confirmNumpad()" class="glass-button w-full py-3.5 text-sm font-bold text-white">
+                تأكيد ✓
             </button>
         </div>
     </div>
 
     <script>
         lucide.createIcons();
+
+        // ======================
+        // 1. TOAST SYSTEM (بديل الـ alert)
+        // ======================
+        function showToast(message, type = 'info', duration = 3500) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast-item ${type}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+
+            // إظهار مع تأثير
+            requestAnimationFrame(() => {
+                toast.classList.add('show');
+            });
+
+            // إزالة بعد المدة
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    if (toast.parentNode) toast.remove();
+                }, 300);
+            }, duration);
+        }
+
+        // ======================
+        // 2. NUMBAD – مع دعم تحديد الطول الأقصى
+        // ======================
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzybaVrQUirtdNLIxjlQvdUjIfPniJOVijZ8KeNx_MFYWToIho14EjM4U5XPIUTrH6e/exec";
 
         let rawDashboardData = [];
         let isDashboardUnlocked = false;
         let currentTargetInputId = null;
+        let currentMaxLength = 99;
         let thankYouTimer = null;
         let thankYouInterval = null;
 
-        function openNumpad(inputId, title) {
+        function openNumpad(inputId, title, maxLength = 99) {
             currentTargetInputId = inputId;
+            currentMaxLength = maxLength;
             document.getElementById('numpad-title').innerText = title;
-            document.getElementById('numpad-display').innerText = document.getElementById(inputId).value || '';
+            const currentVal = document.getElementById(inputId).value || '';
+            document.getElementById('numpad-display').innerText = currentVal;
             document.getElementById('numpad-modal').classList.remove('hidden');
         }
 
         function closeNumpad() {
             document.getElementById('numpad-modal').classList.add('hidden');
-            currentTargetInputId = null;
+            // لا نغير القيمة هنا، ننتظر تأكيد المستخدم
+        }
+
+        function confirmNumpad() {
+            // عند الضغط على تأكيد، يتم إبقاء القيمة كما هي في الحقل
+            closeNumpad();
         }
 
         function pressNumpadKey(key) {
             if(!currentTargetInputId) return;
             const input = document.getElementById(currentTargetInputId);
+            // التحقق من الطول الأقصى
+            if (input.value.length >= currentMaxLength) {
+                // يمكن إظهار تنبيه خفيف عبر الـ Toast
+                showToast(`الحد الأقصى ${currentMaxLength} أرقام`, 'warning', 2000);
+                return;
+            }
             input.value += key;
             document.getElementById('numpad-display').innerText = input.value;
         }
@@ -399,6 +504,9 @@
             document.getElementById('numpad-display').innerText = '';
         }
 
+        // ======================
+        // 3. التبديل بين التبويبات
+        // ======================
         function switchTab(tabId) {
             if (tabId !== 'tab-dashboard' && isDashboardUnlocked) lockDashboardNow();
 
@@ -419,14 +527,18 @@
             }
         }
 
+        // ======================
+        // 4. الداشبورد – قفل وفتح (مع Toast بدلاً من alert)
+        // ======================
         function unlockDashboard() {
             if (document.getElementById('dashboard-passcode').value.trim() === "2024") {
                 isDashboardUnlocked = true;
                 document.getElementById('dashboard-lock').classList.add('hidden');
                 document.getElementById('dashboard-content').classList.remove('hidden');
                 loadDashboardData();
+                showToast('تم فتح التقارير بنجاح', 'success', 2000);
             } else {
-                alert("رمز الحماية غير صحيح!");
+                showToast('رمز الحماية غير صحيح!', 'error', 3000);
             }
         }
 
@@ -435,8 +547,12 @@
             document.getElementById('dashboard-passcode').value = '';
             document.getElementById('dashboard-content').classList.add('hidden');
             document.getElementById('dashboard-lock').classList.remove('hidden');
+            showToast('تم قفل التقارير', 'warning', 2000);
         }
 
+        // ======================
+        // 5. شاشة الشكر – مع إمكانية التخطي
+        // ======================
         function triggerConfetti() {
             if (typeof confetti === 'function') {
                 confetti({
@@ -490,48 +606,99 @@
                 document.getElementById('live-phone').value = '';
                 document.getElementById('live-table').value = '';
                 document.getElementById('live-notes').value = '';
+                // إعادة تمكين الزر إذا كان معطلاً
+                const btn = document.getElementById('btn-live-submit');
+                btn.disabled = false;
+                btn.innerText = "حفظ وإرسال الطاولة 🚀";
             }, 500);
         }
 
+        // ======================
+        // 6. إرسال النموذج – مع تحقق و Toast
+        // ======================
         function submitLiveForm(e) {
             e.preventDefault();
             const btn = document.getElementById('btn-live-submit');
+            if (btn.disabled) return; // منع الضغط المتكرر
+
+            // التحقق من صحة الحقول
+            const name = document.getElementById('live-name').value.trim();
+            const phone = document.getElementById('live-phone').value.trim();
+            const table = document.getElementById('live-table').value.trim();
+
+            if (!name) {
+                showToast('يرجى إدخال اسم الزبون', 'error', 3000);
+                document.getElementById('live-name').focus();
+                return;
+            }
+            if (!phone) {
+                showToast('يرجى إدخال رقم الهاتف', 'error', 3000);
+                document.getElementById('live-phone').click(); // فتح النمبد
+                return;
+            }
+            if (!table) {
+                showToast('يرجى إدخال رقم الطاولة', 'error', 3000);
+                document.getElementById('live-table').click();
+                return;
+            }
+            // تحقق من أن الهاتف والطاولة أرقام فقط
+            if (!/^\d+$/.test(phone)) {
+                showToast('رقم الهاتف يجب أن يحتوي على أرقام فقط', 'error', 3000);
+                return;
+            }
+            if (!/^\d+$/.test(table)) {
+                showToast('رقم الطاولة يجب أن يحتوي على أرقام فقط', 'error', 3000);
+                return;
+            }
+
             btn.disabled = true;
             btn.innerText = "جاري الإرسال...";
 
             const payload = {
                 action: "addLive",
-                name: document.getElementById('live-name').value,
-                phone: document.getElementById('live-phone').value,
-                tableNo: document.getElementById('live-table').value,
-                notes: document.getElementById('live-notes').value
+                name: name,
+                phone: phone,
+                tableNo: table,
+                notes: document.getElementById('live-notes').value.trim()
             };
 
             fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) })
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) throw new Error('فشل الاتصال');
+                return res.json();
+            })
             .then(() => {
+                showToast('تم إرسال الطاولة بنجاح ✅', 'success', 2000);
                 showThankYouModal();
             })
-            .catch(() => alert("حدث خطأ أثناء الاتصال بالسيرفر"))
-            .finally(() => {
+            .catch((err) => {
+                showToast('حدث خطأ أثناء الاتصال بالسيرفر: ' + err.message, 'error', 4000);
                 btn.disabled = false;
                 btn.innerText = "حفظ وإرسال الطاولة 🚀";
             });
         }
 
+        // ======================
+        // 7. تحميل بيانات الداشبورد
+        // ======================
         function loadDashboardData() {
             const tbody = document.getElementById('dashboard-table-body');
             tbody.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-white/50">جاري جلب البيانات...</td></tr>';
 
             fetch(`${SCRIPT_URL}?action=getDashboardData`)
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) throw new Error('فشل جلب البيانات');
+                return res.json();
+            })
             .then(data => {
                 rawDashboardData = Array.isArray(data) ? data.reverse() : [];
                 document.getElementById('stat-total').innerText = rawDashboardData.length;
                 renderTableData(rawDashboardData);
+                showToast('تم تحديث البيانات', 'success', 1500);
             })
             .catch(() => {
                 tbody.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-rose-300 font-bold">فشل جلب البيانات من الخادم</td></tr>';
+                showToast('فشل تحميل البيانات، تحقق من الاتصال', 'error', 3500);
             });
         }
 
@@ -556,10 +723,16 @@
             });
         }
 
+        // ======================
+        // 8. طباعة وتصدير Excel مع Toast
+        // ======================
         function triggerPrint() { window.print(); }
 
         function exportToExcel() {
-            if(!rawDashboardData || rawDashboardData.length === 0) return alert("لا توجد بيانات للتصدير!");
+            if(!rawDashboardData || rawDashboardData.length === 0) {
+                showToast('لا توجد بيانات للتصدير!', 'warning', 3000);
+                return;
+            }
             const cleanData = rawDashboardData.map(item => ({
                 'الاسم': item.name || '',
                 'الهاتف': item.phone || '',
@@ -571,7 +744,22 @@
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, worksheet, "Reports");
             XLSX.writeFile(workbook, "Matleek_Report.xlsx");
+            showToast('تم تصدير الملف بنجاح 📊', 'success', 2500);
         }
+
+        // ======================
+        // 9. (إضافي) إغلاق النمبد عند الضغط خارجياً – تحسين UX
+        // ======================
+        document.getElementById('numpad-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeNumpad();
+            }
+        });
+
+        // ======================
+        // 10. تحميل تلقائي للبيانات إذا كان القفل مفتوحاً (للتحديث)
+        // ======================
+        // يمكن استدعاء loadDashboardData عند التبديل للتبويب إذا كان مفتوحاً، لكننا نستدعيه يدوياً.
     </script>
 </body>
 </html>
